@@ -8,6 +8,9 @@
 
 请问恶趣味
 
+{{ $('Github Trigger').item.json.body.commits.map(commit => `📝 提交说明：${commit.message.replace(/\n/g, ' ')}
+👤 提交人：${commit.author.name}
+🔗 提交链接：${commit.url}`).join('\n\n') }}
 
 
-21312123
+王企鹅
