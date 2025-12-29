@@ -6,23 +6,25 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// 原始文件
-const SRC_FILE = "changelog/2025.mdx";
-
-// 目标语言配置
+/**
+ * 配置
+ */
+const SRC_DIR = "changelog"; // 原始文件目录
 const TARGET_LANGS = [
   {
     code: "cn",
+    name: "Chinese",
     systemPrompt: "请将英文 changelog 翻译成自然、专业的简体中文，保留 Markdown 结构、列表、版本号。",
   },
   {
     code: "ko",
+    name: "Korean",
     systemPrompt: "Please translate the English changelog into natural, professional Korean. Keep Markdown structure, lists, and version numbers.",
   },
 ];
 
 /**
- * 调用 OpenAI API 翻译
+ * 翻译函数
  */
 async function translate(text, systemPrompt) {
   const res = await client.chat.completions.create({
@@ -32,40 +34,39 @@ async function translate(text, systemPrompt) {
       { role: "user", content: text },
     ],
   });
-
   return res.choices[0].message.content;
 }
 
 /**
- * 主函数
+ * 主执行函数
  */
 async function run() {
-  try {
-    // 检查原始文件是否存在
-    if (!(await fs.pathExists(SRC_FILE))) {
-      console.log(`Source file "${SRC_FILE}" not found. Skipping translation.`);
-      return;
-    }
+  if (!(await fs.pathExists(SRC_DIR))) {
+    console.log("No changelog directory, skip");
+    return;
+  }
 
-    const content = await fs.readFile(SRC_FILE, "utf-8");
+  const files = await fs.readdir(SRC_DIR);
+  for (const file of files) {
+    if (!file.endsWith(".md") && !file.endsWith(".mdx")) continue;
+
+    const srcPath = path.join(SRC_DIR, file);
+    const content = await fs.readFile(srcPath, "utf-8");
 
     for (const lang of TARGET_LANGS) {
-      // 生成输出目录，例如 cn/changelog
-      const outDir = path.join(lang.code, "changelog");
-      const outPath = path.join(outDir, path.basename(SRC_FILE));
+      const outDir = path.join(lang.code, SRC_DIR);
+      const outPath = path.join(outDir, file);
 
-      await fs.ensureDir(outDir); // 确保目录存在
-
-      console.log(`Translating ${SRC_FILE} → ${outPath} ...`);
+      await fs.ensureDir(outDir);
       const translated = await translate(content, lang.systemPrompt);
       await fs.writeFile(outPath, translated, "utf-8");
-      console.log(`✅ Translated ${SRC_FILE} → ${outPath}`);
+
+      console.log(`Translated ${file} → ${lang.code}`);
     }
-  } catch (err) {
-    console.error("Translation failed:", err);
-    process.exit(1);
   }
 }
 
-// 执行
-run();
+// 确保 workflow run 时等待完成
+(async () => {
+  await run();
+})();

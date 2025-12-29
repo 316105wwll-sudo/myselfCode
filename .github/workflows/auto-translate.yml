@@ -15,32 +15,32 @@ jobs:
       pull-requests: write
 
     steps:
-      # Step 1：检出当前分支
+      # 1. 检出当前分支
       - name: Checkout source branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
 
-      # Step 2：Node 环境
+      # 2. Node 环境
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # Step 3：安装依赖
+      # 3. 安装依赖
       - name: Install deps
         run: |
           npm init -y
           npm install openai fs-extra
 
-      # Step 4：执行翻译
+      # 4. 执行翻译
       - name: Run translation
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: node translate.js
         timeout-minutes: 60
 
-      # Step 5：提交翻译分支
+      # 5. 提交翻译分支
       - name: Commit translated files
         run: |
           TRANS_BRANCH="${GITHUB_REF_NAME}-auto-translate"
@@ -66,7 +66,7 @@ jobs:
           # 强制推送翻译分支
           git push origin "$TRANS_BRANCH" --force
 
-      # Step 6：创建 PR
+      # 6. 创建 PR
       - name: Create PR to main
         uses: peter-evans/create-pull-request@v6
         with:
