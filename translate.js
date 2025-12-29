@@ -6,7 +6,6 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// 配置
 const SRC_DIR = "changelog";
 const TARGET_LANGS = [
   {
@@ -21,7 +20,6 @@ const TARGET_LANGS = [
   },
 ];
 
-// 翻译函数
 async function translate(text, systemPrompt) {
   const res = await client.chat.completions.create({
     model: "gpt-4o-mini",
@@ -33,7 +31,6 @@ async function translate(text, systemPrompt) {
   return res.choices[0].message.content;
 }
 
-// 主执行函数
 async function run() {
   if (!(await fs.pathExists(SRC_DIR))) {
     console.log("No changelog directory, skip");
@@ -45,24 +42,33 @@ async function run() {
   for (const file of files) {
     if (!file.endsWith(".md") && !file.endsWith(".mdx")) continue;
 
-    const srcPath = path.join(SRC_DIR, file);
-    const content = await fs.readFile(srcPath, "utf-8");
+    const content = await fs.readFile(path.join(SRC_DIR, file), "utf-8");
 
-    // 使用 Promise.all + await 并行翻译每个语言，确保翻译完成
     await Promise.all(TARGET_LANGS.map(async (lang) => {
       const outDir = path.join(lang.code, SRC_DIR);
       await fs.ensureDir(outDir);
 
-      const translated = await translate(content, lang.systemPrompt);
       const outPath = path.join(outDir, file);
-      await fs.writeFile(outPath, translated, "utf-8");
 
-      console.log(`Translated ${file} → ${lang.code}`);
+      // 如果文件存在，先读取旧内容比对
+      let oldContent = "";
+      if (await fs.pathExists(outPath)) {
+        oldContent = await fs.readFile(outPath, "utf-8");
+      }
+
+      const translated = await translate(content, lang.systemPrompt);
+
+      // 仅在内容不同才写入
+      if (translated.trim() !== oldContent.trim()) {
+        await fs.writeFile(outPath, translated, "utf-8");
+        console.log(`Translated ${file} → ${lang.code}`);
+      } else {
+        console.log(`No change for ${file} → ${lang.code}`);
+      }
     }));
   }
 }
 
-// 顶层 IIFE 确保 Node 步骤阻塞
 (async () => {
   await run();
 })();

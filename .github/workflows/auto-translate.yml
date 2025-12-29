@@ -39,6 +39,7 @@ jobs:
       - name: Commit translated files
         run: |
           TRANS_BRANCH="${GITHUB_REF_NAME}-auto-translate"
+
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
@@ -51,27 +52,24 @@ jobs:
           git fetch origin main
           git rebase origin/main || echo "Rebase completed with conflicts"
 
+          # 仅提交实际存在并有变更的翻译文件
           git add cn/** ko/** || echo "No translation files to commit"
+          git diff --cached --name-only > diff.txt
+          CHANGED=$(cat diff.txt)
+          echo "CHANGED=$CHANGED" >> $GITHUB_ENV
+
           git commit -m "chore: auto translate ($(date '+%Y-%m-%d %H:%M'))" || echo "Nothing to commit"
           git push origin "$TRANS_BRANCH" --force
 
-          # 检查是否有变化
-          CHANGED=$(git diff --name-only origin/main | grep -E "^(cn/|ko/)" || true)
-          echo "CHANGED=$CHANGED" >> $GITHUB_ENV
-#      - name: Wait before creating PR
-#        run: |
-#          echo "Waiting 10 minutes to ensure translation files are ready..."
-#          sleep 420  # 600 秒 = 10 分钟
-#
-#      - name: Create PR to main
-#        if: env.CHANGED != ''
-#        uses: peter-evans/create-pull-request@v6
-#        with:
-#          branch: ${{ github.ref_name }}-auto-translate
-#          base: main
-#          title: "Auto translation from ${{ github.ref_name }}"
-#          body: |
-#            🤖 This PR was automatically generated.
-#
-#            Source branch: `${{ github.ref_name }}`
-#            Target branch: `main`
+      - name: Create PR to main
+        if: env.CHANGED != ''
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: ${{ github.ref_name }}-auto-translate
+          base: main
+          title: "Auto translation from ${{ github.ref_name }}"
+          body: |
+            🤖 This PR was automatically generated.
+
+            Source branch: `${{ github.ref_name }}`
+            Target branch: `main`
