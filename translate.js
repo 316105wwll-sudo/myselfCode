@@ -6,24 +6,39 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// ====== 你只需要关心这两行 ======
-const SRC_DIR = "changelog";      // 原始中文 changelog
-const DEST_DIR = "changelog/en";  // 翻译后的英文 changelog
-// =================================
+/**
+ * ===============================
+ * 【你只改这里】
+ * ===============================
+ */
 
-async function translate(text) {
+// 原始文件所在目录（英文）
+const SRC_DIR = "changelog";
+
+// 要翻译成哪些语言
+const TARGET_LANGS = [
+  {
+    code: "zh",
+    name: "Chinese",
+    systemPrompt: "请将英文 changelog 翻译成自然、专业的简体中文，保留 Markdown 结构、列表、版本号。",
+  },
+  {
+    code: "ko",
+    name: "Korean",
+    systemPrompt: "Please translate the English changelog into natural, professional Korean. Keep Markdown structure, lists, and version numbers.",
+  },
+];
+
+/**
+ * ===============================
+ */
+
+async function translate(text, systemPrompt) {
   const res = await client.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
-      {
-        role: "system",
-        content:
-          "你是专业发布说明翻译助手，请将中文 changelog 翻译成自然、准确的英文，保留 Markdown 结构、列表和版本号。",
-      },
-      {
-        role: "user",
-        content: text,
-      },
+      { role: "system", content: systemPrompt },
+      { role: "user", content: text },
     ],
   });
 
@@ -31,29 +46,30 @@ async function translate(text) {
 }
 
 async function run() {
-  // 如果没有 changelog 目录，直接退出
   if (!(await fs.pathExists(SRC_DIR))) {
-    console.log("No changelog directory found, skip translation.");
+    console.log("No changelog directory, skip");
     return;
   }
-
-  // 创建 changelog/en 目录
-  await fs.ensureDir(DEST_DIR);
 
   const files = await fs.readdir(SRC_DIR);
 
   for (const file of files) {
-    // 只翻译 .md 文件
     if (!file.endsWith(".md")) continue;
 
     const srcPath = path.join(SRC_DIR, file);
-    const destPath = path.join(DEST_DIR, file);
-
     const content = await fs.readFile(srcPath, "utf-8");
-    const translated = await translate(content);
 
-    await fs.writeFile(destPath, translated, "utf-8");
-    console.log(`Translated: ${file}`);
+    for (const lang of TARGET_LANGS) {
+      const outDir = path.join(SRC_DIR, lang.code);
+      const outPath = path.join(outDir, file);
+
+      await fs.ensureDir(outDir);
+
+      const translated = await translate(content, lang.systemPrompt);
+      await fs.writeFile(outPath, translated, "utf-8");
+
+      console.log(`Translated ${file} → ${lang.code}`);
+    }
   }
 }
 
