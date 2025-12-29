@@ -15,27 +15,32 @@ jobs:
       pull-requests: write
 
     steps:
+      # Step 1: 检出触发 push 的原始分支
       - name: Checkout source branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
 
+      # Step 2: Node 环境
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
+      # Step 3: 安装依赖
       - name: Install deps
         run: |
           npm init -y
           npm install openai fs-extra
 
+      # Step 4: 执行翻译
       - name: Run translation
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: node translate.js
         timeout-minutes: 60
 
+      # Step 5: 创建/更新翻译分支并提交翻译文件
       - name: Commit translated files
         run: |
           TRANS_BRANCH="${GITHUB_REF_NAME}-auto-translate"
@@ -43,24 +48,24 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          if git show-ref --verify --quiet "refs/heads/$TRANS_BRANCH"; then
-              git checkout "$TRANS_BRANCH"
-          else
-              git checkout -b "$TRANS_BRANCH"
-          fi
-
+          # 基于最新 main 重建翻译分支，避免冲突
           git fetch origin main
-          git rebase origin/main || echo "Rebase completed with conflicts"
+          git checkout -B "$TRANS_BRANCH" origin/main
 
-          # 仅提交实际存在并有变更的翻译文件
+          # 提交翻译文件，如果目录不存在也不会报错
           git add cn/** ko/** || echo "No translation files to commit"
+
+          # 检查是否有差异
           git diff --cached --name-only > diff.txt
           CHANGED=$(cat diff.txt)
           echo "CHANGED=$CHANGED" >> $GITHUB_ENV
 
-          git commit -m "chore: auto translate ($(date '+%Y-%m-%d %H:%M'))" || echo "Nothing to commit"
+          git diff --cached --quiet || git commit -m "chore: auto translate ($(date '+%Y-%m-%d %H:%M'))"
+
+          # 强制推送到翻译分支
           git push origin "$TRANS_BRANCH" --force
 
+      # Step 6: 仅在有翻译文件变更时创建 PR
       - name: Create PR to main
         if: env.CHANGED != ''
         uses: peter-evans/create-pull-request@v6
