@@ -68,7 +68,7 @@ async function run() {
 
       const translated = await translate(content, lang.systemPrompt);
       await fs.writeFile(outPath, translated, "utf-8");
-
+      console.log(`Translated ${file} → ${outPath}`);
       console.log(`Translated ${file} → ${lang.code}`);
     }
   }
