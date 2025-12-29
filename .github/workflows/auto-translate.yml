@@ -58,7 +58,8 @@ jobs:
           fi
 
           # 只提交真实存在的翻译目录
-          git add cn ko
+          git add cn/** ko/** || echo "No translation files to commit"
+
 
           git commit -m "chore: auto translate ($(date '+%Y-%m-%d %H:%M'))" || echo "Nothing to commit"
           git push origin "$TRANS_BRANCH"
