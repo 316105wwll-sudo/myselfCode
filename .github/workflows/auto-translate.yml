@@ -7,9 +7,7 @@ on:
 
 jobs:
   translate:
-    # 防止翻译分支再次触发，避免死循环
     if: "!contains(github.ref_name, 'auto-translate')"
-
     runs-on: ubuntu-latest
 
     permissions:
@@ -17,7 +15,7 @@ jobs:
       pull-requests: write
 
     steps:
-      # Step 1：检出触发 push 的原始分支
+      # Step 1：检出当前分支
       - name: Checkout source branch
         uses: actions/checkout@v4
         with:
@@ -42,7 +40,7 @@ jobs:
         run: node translate.js
         timeout-minutes: 60
 
-      # Step 5：创建 / 切换翻译分支并提交
+      # Step 5：提交翻译分支
       - name: Commit translated files
         run: |
           TRANS_BRANCH="${GITHUB_REF_NAME}-auto-translate"
@@ -50,29 +48,30 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          # 分支存在就切换，不存在就创建
+          # 切换或创建翻译分支
           if git show-ref --verify --quiet "refs/heads/$TRANS_BRANCH"; then
-            git checkout "$TRANS_BRANCH"
+              git checkout "$TRANS_BRANCH"
           else
-            git checkout -b "$TRANS_BRANCH"
+              git checkout -b "$TRANS_BRANCH"
           fi
 
-          # 清理可能残留的索引和空目录
-          # git reset --hard
-          # git clean -fd
+          # 拉取 main 并 rebase，减少冲突
+          git fetch origin main
+          git rebase origin/main || echo "Rebase completed with conflicts; manual resolution needed"
 
-          # 提交翻译文件，如果目录不存在也不会报错
+          # 提交翻译文件，如果目录不存在不会报错
           git add cn/** ko/** || echo "No translation files to commit"
-
           git commit -m "chore: auto translate ($(date '+%Y-%m-%d %H:%M'))" || echo "Nothing to commit"
+
+          # 强制推送翻译分支
           git push origin "$TRANS_BRANCH" --force
 
-      # Step 6：创建 PR → main
+      # Step 6：创建 PR
       - name: Create PR to main
         uses: peter-evans/create-pull-request@v6
         with:
-          branch: ${{ github.ref_name }}-auto-translate   # ← 这里用 branch 替代 head
-          base: main
+          branch: ${{ github.ref_name }}-auto-translate   # 源分支
+          base: main                                      # 目标分支
           title: "Auto translation from ${{ github.ref_name }}"
           body: |
             🤖 This PR was automatically generated.
