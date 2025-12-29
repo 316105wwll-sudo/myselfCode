@@ -1,0 +1,849 @@
+---
+title: "Changelog"
+description: "This changelog documents all updates, fixes, and new features for Codatta in 2025."
+---
+
+import { useState, useEffect } from 'react';
+
+<div style={{
+  backgroundColor: '#ffffff',
+  border: '1px solid #e5e7eb',
+  borderRadius: '0.75rem',
+  padding: '0.875rem 1.25rem',
+  marginBottom: '2rem',
+  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
+}}>
+  <div style={{ 
+    display: 'flex', 
+    alignItems: 'center', 
+    flexWrap: 'wrap', 
+    gap: '1rem',
+    marginBottom: '0.1rem'
+  }}>
+    <ChangelogFilter />
+    <MonthFilter />
+  </div>
+  
+  {(() => {
+    const ShowResult = () => {
+      const [num, setNum] = useState(0);
+      useEffect(() => {
+        if (typeof document === 'undefined') return;
+        const update = () => {
+          try {
+            const items = document.querySelectorAll('.changelog-item');
+            let count = 0;
+            items.forEach(item => {
+              if (item.style.display !== 'none') count++;
+            });
+            setNum(count);
+          } catch {}
+        };
+        update();
+        const id = setInterval(update, 2000);
+        return () => clearInterval(id);
+      }, []);
+      return (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          padding: '0.5rem 0.875rem',
+          backgroundColor: '#f9fafb',
+          borderRadius: '0.5rem',
+          fontSize: '0.8125rem',
+          color: '#6b7280',
+          border: '1px solid #e5e7eb',
+          display: 'inline-flex',
+          fontWeight: '500',
+          letterSpacing: '0.01em'
+        }}>
+          <span style={{
+            display: 'inline-block',
+            width: '6px',
+            height: '6px',
+            borderRadius: '50%',
+            backgroundColor: '#10b981',
+            marginRight: '0.5rem',
+            flexShrink: 0
+          }}></span>
+          <strong style={{color:'#111827', fontWeight:'600', marginRight: '0.25rem'}}>{num}</strong>
+          <span>result{num !== 1 ? 's' : ''}</span>
+        </div>
+      );
+    };
+    return <ShowResult />;
+  })()}
+</div>
+
+<div className="changelog-item" data-type="core-feature" data-month="dec">
+
+## Dec 04, 2025
+---
+**Evolving Incentives: Reward Lock-ups for Long-term Ecosystem Management**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+An optional lock-up feature for rewards from high-incentive tasks (e.g., in Airdrop or Frontier campaigns).
+
+- **Trigger:** Rewards are deposited to your balance after a campaign.
+- **Lock:** Secure rewards by locking them in a smart contract via the Assets page.
+- **Release:** After the lock-up period, claim rewards directly to your wallet with one click.
+
+This is a key step in evolving our incentive system toward granular management. It provides a tool to manage liquidity in high-reward scenarios, balancing short-term engagement with the ecosystem's long-term health.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="nov">
+
+## Nov 24, 2025
+---
+**Campaign Launch: Airdrop Season 2**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+To systematically collect academic-grade datasets in physics, finance, and multimodal domains, and bootstrap high-quality data pipelines for three new frontiers.
+
+- **Action:** Launched Airdrop Season 2 with a 1M $XNY prize pool (3-month linear vesting).
+- **New Frontiers:**
+  - **Advanced Physics Questions:** For domain experts to submit high-difficulty physics problems that current AI cannot answer correctly.
+  - **Crypto & Stock Information:** To provide AI with reliable information related to cryptocurrency and stock investment decisions.
+  - **Real-world Photo:** To provide AI with real-world photographs that include annotated metadata.
+- **Reward Structure:** 90% for task completion, 10% for leaderboard rankings.
+- **Timeline:** Nov 24, 2025, 09:00 UTC – Dec 8, 2025, 09:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="core-feature" data-month="nov">
+
+## Nov 05, 2025
+---
+**Account System Upgrade: DID Officially Launched**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+A foundational upgrade enabling account binding to Decentralized Identifiers (DID).
+
+- **Binding:** Self-service integration of an on-chain DID through your next login to Codatta.
+- **Association:** The bound DID serves as the unified primary key, systematically indexing all task actions, data contributions, and reward distributions.
+- **Lineage:** Enables full traceability and verification of both on-chain and off-chain activities, establishing immutable data provenance.
+
+This deployment establishes the technical cornerstone for a verifiable data economy. By providing each contributor with a persistent, unique digital identity, we enable granular contribution attribution, unambiguous ownership verification, and transparent incentive allocation at the protocol level.
+
+</div>
+
+<div className="changelog-item" data-type="fixes" data-month="nov">
+
+## Nov 03, 2025
+---
+**Quest System Adjustment: Crypto Frontier QUEST Module Decommissioned**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+The entire Crypto Frontier QUEST module and all associated tasks—including Submission, Validation, and Bounty Hunting—have been taken offline.
+
+- **Why:** This module has completed its planned lifecycle under the current product roadmap. The decommission supports system streamlining and resource realignment for upcoming feature releases.
+- **Note:** Users' historical contribution records and earned rewards from this module remain intact. No other Frontier modules are affected by this change.
+
+</div>
+
+<div className="changelog-item" data-type="fixes" data-month="oct">
+
+## Oct 24, 2025
+---
+**Frontier System Adjustment: Robotics Frontier Decommissioned**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+The Robotics Frontier has been officially decommissioned. This action only affects the front-end entry point. All historical contribution data remains intact and accessible.
+
+- **Why:** This decision is part of our ongoing product streamlining to focus resources and user attention on our highest-priority active frontiers. The Robotics Frontier has fulfilled its planned exploratory phase, and its decommission allows us to consolidate efforts.
+- **Note:** Users' past contributions and rewards from the Robotics Frontier are preserved and can be reviewed in their contribution history. No other frontiers or platform functionality is impacted.
+
+</div>
+
+<div className="changelog-item" data-type="optimization" data-month="oct">
+
+## Oct 23, 2025
+---
+**Anti-Spam Enhancement: Daily Submission Limits Implemented**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+A new platform-wide security policy to prevent task spamming.
+
+- **How:** Enforces a configurable daily submission cap for each task.
+- **Why:** To protect system resources, ensure equitable participation for all contributors, and maintain the long-term health and fairness of the task ecosystem.
+
+</div>
+
+<div className="changelog-item" data-type="fixes" data-month="oct">
+
+## Oct 20, 2025
+---
+**Frontier System Adjustment: Crypto Frontier Decommissioned**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+The Crypto Frontier has been officially decommissioned. This action only affects the front-end entry point. All historical contribution data remains intact and accessible.
+
+- **Why:** This decision is part of our ongoing product streamlining to focus resources and user attention on our highest-priority active frontiers. The Crypto Frontier has fulfilled its planned exploratory phase, and its decommission allows us to consolidate efforts.
+- **Note:** Users' past contributions and rewards from the Crypto Frontier are preserved and can be reviewed in their contribution history. No other frontiers or platform functionality is impacted.
+
+</div>
+
+<div className="changelog-item" data-type="optimization" data-month="oct">
+
+## Oct 15, 2025
+---
+**System Governance: Platform Blacklist Control Implemented**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+A new blacklist control feature has been implemented on the platform.
+
+- **How:** Designated admins can now apply blacklist rules to restrict malicious accounts.
+- **Why:** To enhance platform security, protect contributor interests, and uphold ecosystem fairness.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="oct">
+
+## Oct 13, 2025
+---
+**Campaign Launch: Airdrop Season 1**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+To systematically collect high-quality, structured data through a high-reward mechanism and anti-spam enforcement, ensuring validity and academic value, and to reward long-term contributors and diversify the platform's data ecosystem via five new frontier modules.
+
+- **Action:** Launched Airdrop Season 1 with a 2.5M $XNY prize pool and points rewards.
+- **New Frontiers:**
+  - **Model Comparison:** Compare performance metrics and business outcomes across different AI models to identify optimal or hybrid solutions.
+  - **Spot LLM's Mistakes:** Identify reasoning, factual, and logical errors in LLM outputs to support model optimization.
+  - **Correct LLM's Mistakes:** Collect corrective data to help LLMs learn from mistakes and improve self-correction and reasoning.
+  - **Food Science:** Gather research data in food science and nutritional functionality to drive innovation in the field.
+  - **Lifelog Canvas:** Track and log personal behavior and health-related data to support behavioral and related research.
+- **Reward Structure:** Rewards are ranked by submission rating and distributed after the campaign. Malicious submissions are penalized to ensure data quality.
+- **Timeline:** Oct 13, 2025, 09:00 UTC - Oct 27, 2025, 09:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="core-feature" data-month="oct">
+
+## Oct 10, 2025
+---
+**Feature Launch: Frontier-Specific Reward Activity**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+Configurable reward activities are now available for Frontiers, offering additional high-value incentives.
+
+- **How:** Selected Frontier tasks provide extra rewards in $XNY or USDT, independent of base points. Activity parameters (reward amount, duration, objectives) are set per Frontier and displayed on their respective homepages.
+- **Why:** To drive deeper participation in high-value data tasks through targeted incentives, improving both data quality and ecosystem engagement.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="sep">
+
+## Sep 26, 2025
+---
+**Campaign Launch: Codatta Booster Campaign Season 3 Week 4**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+To accelerate AI development through trusted multi-domain data collection and foster community-driven decentralized AI knowledge building.
+
+- **Access:** Accessible via the Binance Wallet Booster tab or the homepage banner (requires Alpha Points ≥ 61).
+- **Rewards:** Total reward pool of 50,000,000 $XNY (with a lock-up period), distributed after task completion and verification.
+- **Timeline:** September 26, 2025, 07:00 UTC – October 3, 2025, 07:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="sep">
+
+## Sep 12, 2025
+---
+**Campaign Launch: Codatta Booster Campaign Season 3 Week 3**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+To collect cross-domain data across life, robotics, crypto, model comparison, and fingerprint verification for AI training and verification.
+
+- **Access:** Accessible via the Binance Wallet Booster tab or the homepage banner (requires Alpha Points ≥ 61).
+- **Rewards:** Total reward pool of 50,000,000 $XNY (with a lock-up period), distributed after task completion and verification.
+- **Timeline:** September 12, 2025, 07:00 UTC – September 19, 2025, 07:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="sep">
+
+## Sep 05, 2025
+---
+**Campaign Launch: Codatta Booster Campaign Season 3 Week 2**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+To collect and annotate cross-domain data across life, robotics, and crypto for AI training and validation.
+
+- **Access:** Accessible via the Binance Wallet Booster tab or the homepage banner (requires Alpha Points ≥ 61).
+- **Rewards:** Total reward pool of 50,000,000 $XNY (with a lock-up period), distributed after task completion and verification.
+- **Timeline:** September 5, 2025, 07:00 UTC – September 12, 2025, 07:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="core-feature" data-month="aug">
+
+## Aug 28, 2025
+---
+**Feature Launch: User Data Profile**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+Introduce a new Data Profile feature within the User Info module.
+
+- **How:** Access via User Info > Data Profile to view your total submissions, earned rewards, and contribution statistics in a visual dashboard.
+- **Why:** Provide transparency into your contributions, reinforce engagement through visible progress tracking, and support long-term participation.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="aug">
+
+## Aug 22, 2025
+---
+**Campaign Launch: Codatta Booster Campaign Season 3 Week 1**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+To establish a foundation of cross-domain annotated data across life, robotics, and crypto for decentralized AI training.
+
+- **Access:** Accessible via the Binance Wallet Booster tab or the homepage banner (requires Alpha Points ≥ 61).
+- **Rewards:** Total reward pool of 50,000,000 $XNY (with a lock-up period), distributed after task completion and verification.
+- **Timeline:** August 22, 2025, 07:00 UTC – August 29, 2025, 07:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="aug">
+
+## Aug 15, 2025
+---
+**Campaign Launch: Codatta Booster Campaign Season 2 Week 4**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+To systematically annotate and expand domain-specific datasets in food AI, robotic interaction, and CEX on-chain data for decentralized AI training.
+
+- **Access:** Accessible via Binance Wallet Booster tab or homepage banner (requires Alpha Points ≥ 61).
+- **Rewards:** Total reward pool of 50,000,000 $XNY (with a lock-up period), distributed after task completion and verification.
+- **Timeline:** August 15, 2025, 07:00 UTC – August 22, 2025, 07:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="aug">
+
+## Aug 08, 2025
+---
+**Campaign Launch: Codatta Booster Campaign Season 2 Week 3**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+To systematically collect annotated data across four key areas: project learning, food AI judgement, robotic annotation, and CEX data expansion.
+
+- **Access:** Accessible via Binance Wallet Booster tab or homepage banner (Alpha Points ≥ 61).
+- **Rewards:** Total reward pool of 50,000,000 $XNY (with a lock-up period), distributed after task completion and verification.
+- **Timeline:** August 8, 2025, 07:00 UTC – August 15, 2025, 07:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="aug">
+
+## Aug 01, 2025
+---
+**Campaign Launch: Codatta Booster Campaign Season 2 Week 2**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+To collect annotated data across three core domains: AI food model comparison, robotic interaction annotation, and CEX hot wallet data labeling.
+
+- **Access:** Accessible via Binance Wallet Booster tab or homepage banner (Alpha Points ≥ 61).
+- **Rewards:** Total reward pool of 50,000,000 $XNY (with a lock-up period), distributed after task completion and verification.
+- **Timeline:** August 1, 2025, 07:00 UTC – August 8, 2025, 07:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="jul">
+
+## July 24, 2025
+---
+**Campaign Launch: Codatta Booster Campaign Season 2 Week 1**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+To validate AI food analysis and enhance robotics training through annotated real-world interaction data.
+
+- **Access:** Accessible via Binance Wallet Booster tab or homepage banner (Alpha Points ≥ 61).
+- **Rewards:** Total reward pool of 50,000,000 $XNY (with a lock-up period), distributed after task completion and verification.
+- **Timeline:** July 24, 2025, 07:00 UTC – July 31, 2025, 07:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="jul">
+
+## July 16, 2025
+---
+**Campaign Launch: Codatta Booster Campaign Season 1 Week 4**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+To deepen AI's understanding of food by collecting enriched annotations that go beyond labels to include weight, cooking methods, and caloric content.
+
+- **Access:** Accessible via Binance Wallet Booster tab or homepage banner (Alpha Points ≥ 61).
+- **Rewards:** Total reward pool of 50,000,000 $XNY, distributed after task completion and verification.
+- **Timeline:** July 16, 2025, 13:00 UTC – July 23, 2025, 13:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="jul">
+
+## July 09, 2025
+---
+**Campaign Launch: Codatta Booster Campaign Season 1 Week 3**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+To teach AI nuanced understanding of human dietary habits by collecting annotated images of ready-to-eat food, focusing on cultural and contextual relevance beyond simple labels.
+
+- **Access:** Accessible via Binance Wallet Booster tab or homepage banner (Alpha Points ≥ 61).
+- **Rewards:** Total reward pool of 50,000,000 $XNY, distributed after task completion and verification.
+- **Timeline:** July 9, 2025, 13:00 UTC – July 16, 2025, 13:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="optimization" data-month="jul">
+
+## July 07, 2025
+---
+**Feature Optimization: Quest System Restored**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+The Quest system has been fully restored and reopened.
+
+- **How:** Temporarily taken offline on June 30, 2025, and now comprehensively restored.
+- **Why:** To enhance system stability and user experience through architectural upgrades.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="jul">
+
+## July 02, 2025
+---
+**Campaign Launch: Codatta Booster Campaign Season 1 Week 2**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+To expand AI's understanding of global food culture and preferences through nuanced image labeling across vegetarian, non-vegetarian, and mixed categories.
+
+- **Access:** Accessible via Binance Wallet Booster tab or homepage banner (Alpha Points ≥ 61).
+- **Rewards:** Total reward pool of 50,000,000 $XNY, distributed after task completion and verification.
+- **Timeline:** July 2, 2025, 13:00 UTC – July 9, 2025, 13:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="jun">
+
+## June 25, 2025
+---
+**Campaign Launch: Codatta Booster Campaign Season 1 Week 1**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+To launch the inaugural season by collecting annotated food data, engaging community knowledge through quizzes, and rewarding participation via a multi-tiered incentive structure.
+
+- **Access:** Accessible via Binance Wallet Booster tab or homepage banner (Alpha Points ≥ 61).
+- **Rewards:** Total reward pool of 50,000,000 $XNY, distributed after task completion and verification.
+- **Timeline:** June 25, 2025, 13:00 UTC – July 2, 2025, 13:00 UTC.
+
+</div>
+
+{/* Component definitions - moved to end of file for cleaner code organization */}
+export const ChangelogFilter = () => {
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMenuHovered, setIsMenuHovered] = useState(false);
+
+  useEffect(() => {
+    window.activeTypeFilter = activeFilter;
+  }, [activeFilter]);
+
+  useEffect(() => {
+    const items = document.querySelectorAll('.changelog-item');
+    const activeMonth = window.activeMonthFilter || 'all';
+    
+    items.forEach((item) => {
+      const itemType = item.getAttribute('data-type');
+      const itemMonth = item.getAttribute('data-month');
+      
+      const typeMatch = activeFilter === 'all' || itemType === activeFilter;
+      const monthMatch = activeMonth === 'all' || itemMonth === activeMonth;
+      
+      item.style.display = typeMatch && monthMatch ? '' : 'none';
+    });
+  }, [activeFilter]);
+
+  const filterTypes = [
+    { id: 'all', label: 'All', color: '#6b7280', count: 24 },
+    { id: 'core-feature', label: 'Core Feature Release', color: '#16A34A', count: 4 },
+    { id: 'optimization', label: 'Adjustments & Optimization', color: '#F59E0B', count: 3 },
+    { id: 'fixes', label: 'Fixes & Feature Sunset', color: '#EF4444', count: 3 },
+    { id: 'campaign', label: 'Campaign Launch', color: '#A855F7', count: 14 }
+  ];
+
+  const activeType = filterTypes.find(type => type.id === activeFilter) || filterTypes[0];
+
+  return (
+    <div style={{ marginBottom: '2rem', position: 'relative' }}>
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          padding: '0.625rem 1rem',
+          border: '2px solid #e5e7eb',
+          borderRadius: '0.5rem',
+          background: 'white',
+          cursor: 'pointer',
+          fontSize: '0.875rem',
+          fontWeight: '500',
+          boxShadow: isOpen ? `0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)` : '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+          transition: 'all 0.2s ease',
+          userSelect: 'none',
+          minWidth: '200px'
+        }}
+      >
+        <span
+          style={{
+            width: '12px',
+            height: '12px',
+            borderRadius: '50%',
+            backgroundColor: activeType.color,
+            display: 'inline-block',
+            flexShrink: 0
+          }}
+        />
+        <span style={{ flex: 1 }}>
+          {activeType.label} ({activeType.count})
+        </span>
+        <span
+          style={{
+            display: 'inline-block',
+            width: '0',
+            height: '0',
+            borderLeft: '5px solid transparent',
+            borderRight: '5px solid transparent',
+            borderTop: '6px solid #6b7280',
+            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.2s ease',
+            flexShrink: 0
+          }}
+        />
+      </div>
+      
+      {isOpen && (
+        <div
+          onMouseEnter={() => setIsMenuHovered(true)}
+          onMouseLeave={() => setIsMenuHovered(false)}
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            marginTop: '0.5rem',
+            backgroundColor: 'white',
+            border: `2px solid ${isMenuHovered ? '#9ca3af' : '#e5e7eb'}`,
+            borderRadius: '0.5rem',
+            boxShadow: isMenuHovered 
+              ? '0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1)' 
+              : '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+            zIndex: 1000,
+            minWidth: '280px',
+            overflow: 'hidden',
+            transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
+          }}
+        >
+          {filterTypes.map((type) => (
+            <div
+              key={type.id}
+              onClick={() => {
+                setActiveFilter(type.id);
+                setIsOpen(false);
+              }}
+              style={{
+                padding: '0.75rem 1rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                borderBottom: type.id !== filterTypes[filterTypes.length - 1].id ? '1px solid #f3f4f6' : 'none',
+                backgroundColor: activeFilter === type.id ? '#f9fafb' : 'white',
+                transition: 'background-color 0.15s ease'
+              }}
+              onMouseEnter={(e) => {
+                if (activeFilter !== type.id) {
+                  e.currentTarget.style.backgroundColor = '#f3f4f6';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeFilter !== type.id) {
+                  e.currentTarget.style.backgroundColor = 'white';
+                }
+              }}
+            >
+              <span style={{ flex: 1, fontSize: '0.875rem', fontWeight: activeFilter === type.id ? '600' : '400' }}>
+                {type.label}
+              </span>
+              <span style={{ 
+                fontSize: '0.75rem', 
+                color: '#6b7280',
+                fontWeight: '500'
+              }}>
+                {type.count}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+      
+      {isOpen && (
+        <div
+          onClick={() => setIsOpen(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 999,
+            backgroundColor: 'transparent'
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
+export const MonthFilter = () => {
+  const [activeMonth, setActiveMonth] = useState('all');
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMenuHovered, setIsMenuHovered] = useState(false);
+
+  useEffect(() => {
+    window.activeMonthFilter = activeMonth;
+    const event = new Event('monthFilterChange');
+    window.dispatchEvent(event);
+  }, [activeMonth]);
+
+  useEffect(() => {
+    const handleMonthChange = () => {
+      const items = document.querySelectorAll('.changelog-item');
+      const activeType = window.activeTypeFilter || 'all';
+      
+      items.forEach((item) => {
+        const itemType = item.getAttribute('data-type');
+        const itemMonth = item.getAttribute('data-month');
+        
+        const typeMatch = activeType === 'all' || itemType === activeType;
+        const monthMatch = activeMonth === 'all' || itemMonth === activeMonth;
+        
+        item.style.display = typeMatch && monthMatch ? '' : 'none';
+      });
+    };
+
+    window.addEventListener('monthFilterChange', handleMonthChange);
+    handleMonthChange();
+    
+    return () => {
+      window.removeEventListener('monthFilterChange', handleMonthChange);
+    };
+  }, [activeMonth]);
+
+  const months = [
+    { id: 'all', label: 'All Months', count: 24 },
+    { id: 'dec', label: 'December', count: 1 },
+    { id: 'nov', label: 'November', count: 3 },
+    { id: 'oct', label: 'October', count: 6 },
+    { id: 'sep', label: 'September', count: 3 },
+    { id: 'aug', label: 'August', count: 5 },
+    { id: 'jul', label: 'July', count: 5 },
+    { id: 'jun', label: 'June', count: 1 }
+  ];
+
+  const activeMonthData = months.find(month => month.id === activeMonth) || months[0];
+
+  return (
+    <div style={{ marginBottom: '2rem', position: 'relative', marginLeft: '1rem' }}>
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          padding: '0.625rem 1rem',
+          border: '2px solid #e5e7eb',
+          borderRadius: '0.5rem',
+          background: 'white',
+          cursor: 'pointer',
+          fontSize: '0.875rem',
+          fontWeight: '500',
+          boxShadow: isOpen ? `0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)` : '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+          transition: 'all 0.2s ease',
+          userSelect: 'none',
+          minWidth: '200px'
+        }}
+      >
+        <span style={{ flex: 1 }}>
+          {activeMonthData.label} ({activeMonthData.count})
+        </span>
+        <span
+          style={{
+            display: 'inline-block',
+            width: '0',
+            height: '0',
+            borderLeft: '5px solid transparent',
+            borderRight: '5px solid transparent',
+            borderTop: '6px solid #6b7280',
+            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.2s ease',
+            flexShrink: 0
+          }}
+        />
+      </div>
+      
+      {isOpen && (
+        <div
+          onMouseEnter={() => setIsMenuHovered(true)}
+          onMouseLeave={() => setIsMenuHovered(false)}
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            marginTop: '0.5rem',
+            backgroundColor: 'white',
+            border: `2px solid ${isMenuHovered ? '#9ca3af' : '#e5e7eb'}`,
+            borderRadius: '0.5rem',
+            boxShadow: isMenuHovered 
+              ? '0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1)' 
+              : '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+            zIndex: 1000,
+            minWidth: '280px',
+            overflow: 'hidden',
+            transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
+          }}
+        >
+          {months.map((month) => (
+            <div
+              key={month.id}
+              onClick={() => {
+                setActiveMonth(month.id);
+                setIsOpen(false);
+              }}
+              style={{
+                padding: '0.75rem 1rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                borderBottom: month.id !== months[months.length - 1].id ? '1px solid #f3f4f6' : 'none',
+                backgroundColor: activeMonth === month.id ? '#f9fafb' : 'white',
+                transition: 'background-color 0.15s ease'
+              }}
+              onMouseEnter={(e) => {
+                if (activeMonth !== month.id) {
+                  e.currentTarget.style.backgroundColor = '#f3f4f6';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeMonth !== month.id) {
+                  e.currentTarget.style.backgroundColor = 'white';
+                }
+              }}
+            >
+              <span style={{ flex: 1, fontSize: '0.875rem', fontWeight: activeMonth === month.id ? '600' : '400' }}>
+                {month.label}
+              </span>
+              <span style={{ 
+                fontSize: '0.75rem', 
+                color: '#6b7280',
+                fontWeight: '500'
+              }}>
+                {month.count}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+      
+      {isOpen && (
+        <div
+          onClick={() => setIsOpen(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 999,
+            backgroundColor: 'transparent'
+          }}
+        />
+      )}
+    </div>
+  );
+};
