@@ -45,23 +45,22 @@ jobs:
       # Step 5：创建 / 切换翻译分支并提交
       - name: Commit translated files
         run: |
-          SRC_BRANCH="${GITHUB_REF_NAME}"
-          TRANS_BRANCH="${SRC_BRANCH}-auto-translate"
+          TRANS_BRANCH="${GITHUB_REF_NAME}-auto-translate"
 
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          # 分支存在就切换，不存在就新建
+          # 分支存在就切换，不存在就创建
           if git show-ref --verify --quiet "refs/heads/$TRANS_BRANCH"; then
             git checkout "$TRANS_BRANCH"
           else
             git checkout -b "$TRANS_BRANCH"
           fi
 
-          # 只 add 新生成的语言文件夹
-          git add cn ko || true
+          # 只提交真实存在的翻译目录
+          git add cn ko
 
-          git commit -m "chore: auto translate ($(date '+%Y-%m-%d %H:%M'))" || exit 0
+          git commit -m "chore: auto translate ($(date '+%Y-%m-%d %H:%M'))" || echo "Nothing to commit"
           git push origin "$TRANS_BRANCH"
 
       # Step 6：创建 PR → main
