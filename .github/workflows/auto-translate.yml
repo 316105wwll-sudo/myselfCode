@@ -57,7 +57,8 @@ jobs:
             git checkout -b "$TRANS_BRANCH"
           fi
 
-          git add docs/en
+          git add changelog/en
+
           git commit -m "chore: auto translate ($(date '+%Y-%m-%d %H:%M'))" || exit 0
           git push origin "$TRANS_BRANCH"
 
