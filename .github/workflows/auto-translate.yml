@@ -58,7 +58,7 @@ jobs:
           mkdir -p cn/changelog
           mkdir -p ko/changelog
 
-          # 只 add 翻译文件
+          # 只 add 翻译文件 
           git add cn/** ko/**
 
           # 没变化就不提交
