@@ -57,9 +57,12 @@ jobs:
             git checkout -b "$TRANS_BRANCH"
           fi
 
-          # 只提交真实存在的翻译目录
-          git add cn/** ko/** || echo "No translation files to commit"
+          # 清理可能残留的索引和空目录
+          git reset --hard
+          git clean -fd
 
+          # 提交翻译文件，如果目录不存在也不会报错
+          git add cn/** ko/** || echo "No translation files to commit"
 
           git commit -m "chore: auto translate ($(date '+%Y-%m-%d %H:%M'))" || echo "Nothing to commit"
           git push origin "$TRANS_BRANCH"
@@ -68,7 +71,7 @@ jobs:
       - name: Create PR to main
         uses: peter-evans/create-pull-request@v6
         with:
-          head: ${{ github.ref_name }}-auto-translate
+          branch: ${{ github.ref_name }}-auto-translate   # ← 这里用 branch 替代 head
           base: main
           title: "Auto translation from ${{ github.ref_name }}"
           body: |
