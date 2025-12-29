@@ -48,22 +48,24 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          # 基于最新 main 重建翻译分支，避免冲突
           git fetch origin main
           git checkout -B "$TRANS_BRANCH" origin/main
 
-          # 提交翻译文件，如果目录不存在也不会报错
           git add cn/** ko/** || echo "No translation files to commit"
 
-          # 检查是否有差异
+          # 安全写入 GITHUB_ENV
           git diff --cached --name-only > diff.txt
-          CHANGED=$(cat diff.txt)
-          echo "CHANGED=$CHANGED" >> $GITHUB_ENV
+          if [ -s diff.txt ]; then
+            echo "CHANGED<<EOF" >> $GITHUB_ENV
+            cat diff.txt >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
 
-          git diff --cached --quiet || git commit -m "chore: auto translate ($(date '+%Y-%m-%d %H:%M'))"
-
-          # 强制推送到翻译分支
-          git push origin "$TRANS_BRANCH" --force
+            git commit -m "chore: auto translate ($(date '+%Y-%m-%d %H:%M'))"
+            git push origin "$TRANS_BRANCH" --force
+          else
+            echo "No changes to commit"
+          fi
+      
 
       # Step 6: 仅在有翻译文件变更时创建 PR
       - name: Create PR to main
