@@ -15,13 +15,13 @@ jobs:
       pull-requests: write
 
     steps:
-      # 1. 检出当前分支
+      # 1. checkout 当前分支
       - name: Checkout source branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
 
-      # 2. Node 环境
+      # 2. 设置 Node
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -55,23 +55,23 @@ jobs:
               git checkout -b "$TRANS_BRANCH"
           fi
 
-          # 拉取 main 并 rebase，减少冲突
+          # 拉取 main 并 rebase
           git fetch origin main
           git rebase origin/main || echo "Rebase completed with conflicts; manual resolution needed"
 
-          # 提交翻译文件，如果目录不存在不会报错
+          # 提交翻译文件
           git add cn/** ko/** || echo "No translation files to commit"
           git commit -m "chore: auto translate ($(date '+%Y-%m-%d %H:%M'))" || echo "Nothing to commit"
 
-          # 强制推送翻译分支
+          # 推送翻译分支
           git push origin "$TRANS_BRANCH" --force
 
       # 6. 创建 PR
       - name: Create PR to main
         uses: peter-evans/create-pull-request@v6
         with:
-          branch: ${{ github.ref_name }}-auto-translate   # 源分支
-          base: main                                      # 目标分支
+          branch: ${{ github.ref_name }}-auto-translate
+          base: main
           title: "Auto translation from ${{ github.ref_name }}"
           body: |
             🤖 This PR was automatically generated.

@@ -6,10 +6,8 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-/**
- * 配置
- */
-const SRC_DIR = "changelog"; // 原始文件目录
+// 配置
+const SRC_DIR = "changelog";
 const TARGET_LANGS = [
   {
     code: "cn",
@@ -23,9 +21,7 @@ const TARGET_LANGS = [
   },
 ];
 
-/**
- * 翻译函数
- */
+// 翻译函数
 async function translate(text, systemPrompt) {
   const res = await client.chat.completions.create({
     model: "gpt-4o-mini",
@@ -37,9 +33,7 @@ async function translate(text, systemPrompt) {
   return res.choices[0].message.content;
 }
 
-/**
- * 主执行函数
- */
+// 主执行函数
 async function run() {
   if (!(await fs.pathExists(SRC_DIR))) {
     console.log("No changelog directory, skip");
@@ -47,26 +41,28 @@ async function run() {
   }
 
   const files = await fs.readdir(SRC_DIR);
+
   for (const file of files) {
     if (!file.endsWith(".md") && !file.endsWith(".mdx")) continue;
 
     const srcPath = path.join(SRC_DIR, file);
     const content = await fs.readFile(srcPath, "utf-8");
 
-    for (const lang of TARGET_LANGS) {
+    // 使用 Promise.all + await 并行翻译每个语言，确保翻译完成
+    await Promise.all(TARGET_LANGS.map(async (lang) => {
       const outDir = path.join(lang.code, SRC_DIR);
-      const outPath = path.join(outDir, file);
-
       await fs.ensureDir(outDir);
+
       const translated = await translate(content, lang.systemPrompt);
+      const outPath = path.join(outDir, file);
       await fs.writeFile(outPath, translated, "utf-8");
 
       console.log(`Translated ${file} → ${lang.code}`);
-    }
+    }));
   }
 }
 
-// 确保 workflow run 时等待完成
+// 顶层 IIFE 确保 Node 步骤阻塞
 (async () => {
   await run();
 })();
