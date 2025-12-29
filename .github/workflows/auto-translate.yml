@@ -40,8 +40,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: node translate.js
-        timeout-minutes: 60   # ← 和 run: 同一级缩进
-
+        timeout-minutes: 60
 
       # Step 5：创建 / 切换翻译分支并提交
       - name: Commit translated files
@@ -59,8 +58,8 @@ jobs:
             git checkout -b "$TRANS_BRANCH"
           fi
 
-          git add changelog/** || true
-
+          # 只 add 新生成的语言文件夹
+          git add cn ko || true
 
           git commit -m "chore: auto translate ($(date '+%Y-%m-%d %H:%M'))" || exit 0
           git push origin "$TRANS_BRANCH"
