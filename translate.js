@@ -54,7 +54,7 @@ async function run() {
   const files = await fs.readdir(SRC_DIR);
 
   for (const file of files) {
-    if (!file.endsWith(".md")) continue;
+    if (!file.endsWith(".mdx")) continue;
 
     const srcPath = path.join(SRC_DIR, file);
     const content = await fs.readFile(srcPath, "utf-8");
