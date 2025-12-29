@@ -6,32 +6,20 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-/**
- * ===============================
- * 【你只改这里】
- * ===============================
- */
+// 原始文件
+const SRC_FILE = "changelog/2025.mdx";
 
-// 原始文件所在目录（英文）
-const SRC_DIR = "changelog";
-
-// 要翻译成哪些语言
+// 目标语言配置
 const TARGET_LANGS = [
   {
-    code: "zh",
-    name: "Chinese",
+    code: "cn",
     systemPrompt: "请将英文 changelog 翻译成自然、专业的简体中文，保留 Markdown 结构、列表、版本号。",
   },
   {
     code: "ko",
-    name: "Korean",
     systemPrompt: "Please translate the English changelog into natural, professional Korean. Keep Markdown structure, lists, and version numbers.",
   },
 ];
-
-/**
- * ===============================
- */
 
 async function translate(text, systemPrompt) {
   const res = await client.chat.completions.create({
@@ -46,31 +34,23 @@ async function translate(text, systemPrompt) {
 }
 
 async function run() {
-  if (!(await fs.pathExists(SRC_DIR))) {
-    console.log("No changelog directory, skip");
+  if (!(await fs.pathExists(SRC_FILE))) {
+    console.log("No changelog file, skip");
     return;
   }
 
-  const files = await fs.readdir(SRC_DIR);
+  const content = await fs.readFile(SRC_FILE, "utf-8");
 
-  for (const file of files) {
-   if (!file.endsWith(".md") && !file.endsWith(".mdx")) continue;
+  for (const lang of TARGET_LANGS) {
+    const outDir = path.join(lang.code, "changelog");
+    const outPath = path.join(outDir, path.basename(SRC_FILE));
 
+    await fs.ensureDir(outDir);
 
-    const srcPath = path.join(SRC_DIR, file);
-    const content = await fs.readFile(srcPath, "utf-8");
+    const translated = await translate(content, lang.systemPrompt);
+    await fs.writeFile(outPath, translated, "utf-8");
 
-    for (const lang of TARGET_LANGS) {
-      const outDir = path.join(SRC_DIR, lang.code);
-      const outPath = path.join(outDir, file);
-
-      await fs.ensureDir(outDir);
-
-      const translated = await translate(content, lang.systemPrompt);
-      await fs.writeFile(outPath, translated, "utf-8");
-      console.log(`Translated ${file} → ${outPath}`);
-      console.log(`Translated ${file} → ${lang.code}`);
-    }
+    console.log(`Translated ${SRC_FILE} → ${outPath}`);
   }
 }
 
