@@ -58,14 +58,14 @@ jobs:
           fi
 
           # 清理可能残留的索引和空目录
-          git reset --hard
-          git clean -fd
+#          git reset --hard
+#          git clean -fd
 
           # 提交翻译文件，如果目录不存在也不会报错
           git add cn/** ko/** || echo "No translation files to commit"
 
           git commit -m "chore: auto translate ($(date '+%Y-%m-%d %H:%M'))" || echo "Nothing to commit"
-          git push origin "$TRANS_BRANCH"
+          git push origin "$TRANS_BRANCH" --force
 
       # Step 6：创建 PR → main
       - name: Create PR to main
