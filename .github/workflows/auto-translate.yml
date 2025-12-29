@@ -58,8 +58,8 @@ jobs:
           fi
 
           # 清理可能残留的索引和空目录
-#          git reset --hard
-#          git clean -fd
+          # git reset --hard
+          # git clean -fd
 
           # 提交翻译文件，如果目录不存在也不会报错
           git add cn/** ko/** || echo "No translation files to commit"
