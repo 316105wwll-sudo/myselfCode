@@ -15,59 +15,52 @@ jobs:
       pull-requests: write
 
     steps:
-      # 1. checkout 当前分支
       - name: Checkout source branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
 
-      # 2. 设置 Node
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # 3. 安装依赖
       - name: Install deps
         run: |
           npm init -y
           npm install openai fs-extra
 
-      # 4. 执行翻译
       - name: Run translation
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: node translate.js
         timeout-minutes: 60
 
-      # 5. 提交翻译分支
       - name: Commit translated files
         run: |
           TRANS_BRANCH="${GITHUB_REF_NAME}-auto-translate"
-
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          # 切换或创建翻译分支
           if git show-ref --verify --quiet "refs/heads/$TRANS_BRANCH"; then
               git checkout "$TRANS_BRANCH"
           else
               git checkout -b "$TRANS_BRANCH"
           fi
 
-          # 拉取 main 并 rebase
           git fetch origin main
-          git rebase origin/main || echo "Rebase completed with conflicts; manual resolution needed"
+          git rebase origin/main || echo "Rebase completed with conflicts"
 
-          # 提交翻译文件
           git add cn/** ko/** || echo "No translation files to commit"
           git commit -m "chore: auto translate ($(date '+%Y-%m-%d %H:%M'))" || echo "Nothing to commit"
-
-          # 推送翻译分支
           git push origin "$TRANS_BRANCH" --force
 
-      # 6. 创建 PR
+          # 检查是否有变化
+          CHANGED=$(git diff --name-only origin/main | grep -E "^(cn/|ko/)" || true)
+          echo "CHANGED=$CHANGED" >> $GITHUB_ENV
+
       - name: Create PR to main
+        if: env.CHANGED != ''
         uses: peter-evans/create-pull-request@v6
         with:
           branch: ${{ github.ref_name }}-auto-translate
