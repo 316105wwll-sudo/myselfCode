@@ -40,6 +40,8 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: node translate.js
+        timeout-minutes: 60   # ← 和 run: 同一级缩进
+
 
       # Step 5：创建 / 切换翻译分支并提交
       - name: Commit translated files
