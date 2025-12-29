@@ -1,0 +1,799 @@
+---
+title: "更新日志"
+description: "本更新日志记录了 Codatta 在 2025 年的所有更新、修复和新特性。"
+---
+
+<div style={{
+  backgroundColor: '#ffffff',
+  border: '1px solid #e5e7eb',
+  borderRadius: '0.75rem',
+  padding: '0.875rem 1.25rem',
+  marginBottom: '2rem',
+  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
+}}>
+  <div style={{ 
+    display: 'flex', 
+    alignItems: 'center', 
+    flexWrap: 'wrap', 
+    gap: '1rem',
+    marginBottom: '0.1rem'
+  }}>
+    <ChangelogFilter />
+    <MonthFilter />
+  </div>
+  
+  {(() => {
+    const ShowResult = () => {
+      const [num, setNum] = useState(0);
+      useEffect(() => {
+        if (typeof document === 'undefined') return;
+        const update = () => {
+          try {
+            const items = document.querySelectorAll('.changelog-item');
+            let count = 0;
+            items.forEach(item => {
+              if (item.style.display !== 'none') count++;
+            });
+            setNum(count);
+          } catch {}
+        };
+        update();
+        const id = setInterval(update, 2000);
+        return () => clearInterval(id);
+      }, []);
+      return (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          padding: '0.5rem 0.875rem',
+          backgroundColor: '#f9fafb',
+          borderRadius: '0.5rem',
+          fontSize: '0.8125rem',
+          color: '#6b7280',
+          border: '1px solid #e5e7eb',
+          display: 'inline-flex',
+          fontWeight: '500',
+          letterSpacing: '0.01em'
+        }}>
+          <span style={{
+            display: 'inline-block',
+            width: '6px',
+            height: '6px',
+            borderRadius: '50%',
+            backgroundColor: '#10b981',
+            marginRight: '0.5rem',
+            flexShrink: 0
+          }}></span>
+          <strong style={{color:'#111827', fontWeight:'600', marginRight: '0.25rem'}}>{num}</strong>
+          <span>结果{num !== 1 ? 's' : ''}</span>
+        </div>
+      );
+    };
+    return <ShowResult />;
+  })()}
+</div>
+
+<div className="changelog-item" data-type="core-feature" data-month="dec">
+
+## 2025年12月04日
+---
+**激励机制演进：长效生态系统管理的奖励锁定**
+
+<br />
+
+一个可选的锁定功能，用于来自高激励任务的奖励（例如，在空投或前沿活动中）。
+
+- **触发**：在活动结束后奖励将显示在您的余额中。
+- **锁定**：通过资产页面将奖励锁定在智能合约中以确保安全。
+- **释放**：锁定期结束后，只需点击一下即可直接将奖励提取到您的钱包。
+
+这是将我们的激励系统演进到细致管理的关键步骤。它提供了一种工具来管理高奖励场景中的流动性，平衡短期参与与生态系统的长期健康。
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="nov">
+
+## 2025年11月24日
+---
+**活动启动：空投第二季**
+
+<br />
+
+为了在物理学、金融和多模式领域系统地收集学术级数据集，并启动三条新的高质量数据管道。
+
+- **行动**：推出空投第二季，奖池为 100 万 $XNY（3 个月线性归属）。
+- **新前沿**：
+  - **高级物理问题**：供领域专家提交当前 AI 无法正确回答的高难度物理问题。
+  - **加密货币和股票信息**：为 AI 提供与加密货币和股票投资决策相关的可靠信息。
+  - **真实世界照片**：为 AI 提供包含注释元数据的真实世界照片。
+- **奖励结构**：完成任务获得 90%，排行榜排名获得 10%。
+- **时间框架**：2025年11月24日 09:00 UTC – 2025年12月8日 09:00 UTC。
+
+</div>
+
+<div className="changelog-item" data-type="core-feature" data-month="nov">
+
+## 2025年11月05日
+---
+**账户系统升级：去中心化身份（DID）正式启动**
+
+<br />
+
+一个基础升级，使账户绑定到去中心化身份（DID）。
+
+- **绑定**：通过下次登录 Codatta 自助服务集成链上 DID。
+- **关联**：绑定的 DID 作为统一主键，对所有任务操作、数据贡献和奖励分配进行系统索引。
+- **血统**：实现链上和链下活动的完全可追溯性和验证，建立不可变数据来源。
+
+此部署为可验证数据经济奠定了技术基石。通过为每位贡献者提供一个持久的、独特的数字身份，我们实现了细粒度的贡献归因、明确的所有权验证和协议级别的透明激励分配。
+
+</div>
+
+<div className="changelog-item" data-type="fixes" data-month="nov">
+
+## 2025年11月03日
+---
+**任务系统调整：停止 Crypto Frontier QUEST 模块**
+
+<br />
+
+整个 Crypto Frontier QUEST 模块及所有相关任务（包括提交、验证和赏金猎人）已下线。
+
+- **原因**：该模块已完成在当前产品路线图下的规划生命周期。停用有助于系统优化和即将到来的功能发布的资源重新配置。
+- **备注**：用户在此模块的历史贡献记录和获得的奖励保持不变。没有其他 Frontier 模块受到此更改的影响。
+
+</div>
+
+<div className="changelog-item" data-type="fixes" data-month="oct">
+
+## 2025年10月24日
+---
+**前沿系统调整：机器人前沿停止使用**
+
+<br />
+
+机器人前沿已正式停止使用。该行为仅影响前端入口。所有历史贡献数据保持不变且可访问。
+
+- **原因**：此决定是我们持续产品优化的一部分，旨在将资源和用户注意力集中在我们最高优先级的活跃前沿。机器人前沿已完成其计划的探索阶段，其停用将使我们能够整合努力。
+- **备注**：用户在机器人前沿的历史贡献和奖励已保留，并可在其贡献记录中查看。没有其他前沿或平台功能受到影响。
+
+</div>
+
+<div className="changelog-item" data-type="optimization" data-month="oct">
+
+## 2025年10月23日
+---
+**反垃圾邮件增强：实施每日提交限制**
+
+<br />
+
+一项新的平台安全政策，以防止任务垃圾邮件。
+
+- **如何**：对每项任务实施可配置的每日提交上限。
+- **原因**：保护系统资源，确保所有贡献者的公平参与，维护任务生态系统的长期健康和公正性。
+
+</div>
+
+<div className="changelog-item" data-type="fixes" data-month="oct">
+
+## 2025年10月20日
+---
+**前沿系统调整：停止 Crypto Frontier 使用**
+
+<br />
+
+Crypto Frontier 已正式停止使用。该行为仅影响前端入口。所有历史贡献数据保持不变且可访问。
+
+- **原因**：此决定是我们持续产品优化的一部分，旨在将资源和用户注意力集中在我们最高优先级的活跃前沿。Crypto Frontier 已完成其计划的探索阶段，其停用将使我们能够整合努力。
+- **备注**：用户在 Crypto Frontier 的历史贡献和奖励已保留，并可在其贡献记录中查看。没有其他前沿或平台功能受到影响。
+
+</div>
+
+<div className="changelog-item" data-type="optimization" data-month="oct">
+
+## 2025年10月15日
+---
+**系统治理：平台黑名单控制实施**
+
+<br />
+
+在平台上实施了一项新的黑名单控制功能。
+
+- **如何**：指定管理员现在可以应用黑名单规则来限制恶意账户。
+- **原因**：提高平台安全性，保护贡献者利益，维护生态系统公平性。
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="oct">
+
+## 2025年10月13日
+---
+**活动启动：空投第一季**
+
+<br />
+
+通过高奖励机制和反垃圾邮件强制措施，系统性地收集高质量、结构化的数据，以确保有效性和学术价值，并奖励长期贡献者，丰富平台的数据生态系统，通过五个新的前沿模块。
+
+- **行动**：推出空投第一季，奖池为 250 万 $XNY 和积分奖励。
+- **新前沿**：
+  - **模型比较**：比较不同 AI 模型的性能指标和商业结果，以识别最佳或混合解决方案。
+  - **发现 LLM 错误**：识别 LLM 输出中的推理、事实和逻辑错误，以支持模型优化。
+  - **纠正 LLM 错误**：收集纠正数据，帮助 LLM 学习错误并改善自我纠正和推理。
+  - **食品科学**：收集食品科学和营养功能中的研究数据，以推动该领域的创新。
+  - **生活日志画布**：跟踪和记录个人行为和健康相关数据，以支持行为和相关研究。
+- **奖励结构**：根据提交评分排名奖励，并在活动结束后分发。恶意提交将受到惩罚，以确保数据质量。
+- **时间框架**：2025年10月13日 09:00 UTC - 2025年10月27日 09:00 UTC。
+
+</div>
+
+<div className="changelog-item" data-type="core-feature" data-month="oct">
+
+## 2025年10月10日
+---
+**功能发布：前沿特定奖励活动**
+
+<br />
+
+前沿现已提供可配置的奖励活动，提供额外的高价值激励。
+
+- **如何**：所选的前沿任务独立于基本积分提供额外的 $XNY 或 USDT 奖励。活动参数（奖励金额、持续时间、目标）根据前沿进行设置，并显示在各自的主页上。
+- **原因**：通过针对激励，推动对高价值数据任务的更深入参与，提高数据质量和生态系统参与度。
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="sep">
+
+## 2025年9月26日
+---
+**活动启动：Codatta 增强者活动第三季第四周**
+
+<br />
+
+为了通过值得信赖的多领域数据收集加速 AI 开发，并促进社区驱动的去中心化 AI 知识建设。
+
+- **访问**：通过币安钱包增强器标签或首页横幅访问（需要 Alpha Points ≥ 61）。
+- **奖励**：总奖励池为 5000 万 $XNY（带锁定期），在任务完成和验证后分发。
+- **时间框架**：2025年9月26日 07:00 UTC – 2025年10月3日 07:00 UTC。
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="sep">
+
+## 2025年9月12日
+---
+**活动启动：Codatta 增强者活动第三季第三周**
+
+<br />
+
+为了在生活、机器人、加密、模型比较和指纹验证领域收集跨领域数据，以供 AI 训练和验证。
+
+- **访问**：通过币安钱包增强器标签或首页横幅访问（需要 Alpha Points ≥ 61）。
+- **奖励**：总奖励池为 5000 万 $XNY（带锁定期），在任务完成和验证后分发。
+- **时间框架**：2025年9月12日 07:00 UTC – 2025年9月19日 07:00 UTC。
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="sep">
+
+## 2025年9月5日
+---
+**活动启动：Codatta 增强者活动第三季第二周**
+
+<br />
+
+为了在生活、机器人和加密领域收集和注释跨领域数据，以供 AI 训练和验证。
+
+- **访问**：通过币安钱包增强器标签或首页横幅访问（需要 Alpha Points ≥ 61）。
+- **奖励**：总奖励池为 5000 万 $XNY（带锁定期），在任务完成和验证后分发。
+- **时间框架**：2025年9月5日 07:00 UTC – 2025年9月12日 07:00 UTC。
+
+</div>
+
+<div className="changelog-item" data-type="core-feature" data-month="aug">
+
+## 2025年8月28日
+---
+**功能发布：用户数据档案**
+
+<br />
+
+在用户信息模块内推出新的数据档案功能。
+
+- **如何**：通过用户信息 > 数据档案访问，以可视化仪表板查看您的总提交、获得的奖励和贡献统计。
+- **原因**：提供对您贡献的透明度，通过可见的进度跟踪增强参与感，支持长期参与。
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="aug">
+
+## 2025年8月22日
+---
+**活动启动：Codatta 增强者活动第三季第一周**
+
+<br />
+
+为了在生活、机器人和加密领域建立跨领域注释数据的基础，以供去中心化 AI 训练。
+
+- **访问**：通过币安钱包增强器标签或首页横幅访问（需要 Alpha Points ≥ 61）。
+- **奖励**：总奖励池为 5000 万 $XNY（带锁定期），在任务完成和验证后分发。
+- **时间框架**：2025年8月22日 07:00 UTC – 2025年8月29日 07:00 UTC。
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="aug">
+
+## 2025年8月15日
+---
+**活动启动：Codatta 增强者活动第二季第四周**
+
+<br />
+
+为了在食品 AI、机器人交互和 CEX 链上数据中系统化地注释和扩展特定领域的数据集，以供去中心化 AI 训练。
+
+- **访问**：通过币安钱包增强器标签或首页横幅访问（需要 Alpha Points ≥ 61）。
+- **奖励**：总奖励池为 5000 万 $XNY（带锁定期），在任务完成和验证后分发。
+- **时间框架**：2025年8月15日 07:00 UTC – 2025年8月22日 07:00 UTC。
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="aug">
+
+## 2025年8月8日
+---
+**活动启动：Codatta 增强者活动第二季第三周**
+
+<br />
+
+为了在四个关键领域（项目学习、食品 AI 判断、机器人注释和 CEX 数据扩展）系统化地收集注释数据。
+
+- **访问**：通过币安钱包增强器标签或首页横幅访问（需要 Alpha Points ≥ 61）。
+- **奖励**：总奖励池为 5000 万 $XNY（带锁定期），在任务完成和验证后分发。
+- **时间框架**：2025年8月8日 07:00 UTC – 2025年8月15日 07:00 UTC。
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="aug">
+
+## 2025年8月1日
+---
+**活动启动：Codatta 增强者活动第二季第二周**
+
+<br />
+
+为了在三个核心领域（AI 食物模型比较、机器人交互注释和 CEX 热钱包数据标记）收集注释数据。
+
+- **访问**：通过币安钱包增强器标签或首页横幅访问（需要 Alpha Points ≥ 61）。
+- **奖励**：总奖励池为 5000 万 $XNY（带锁定期），在任务完成和验证后分发。
+- **时间框架**：2025年8月1日 07:00 UTC – 2025年8月8日 07:00 UTC。
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="jul">
+
+## 2025年7月24日
+---
+**活动启动：Codatta 增强者活动第二季第一周**
+
+<br />
+
+为了通过注释的真实世界交互数据验证 AI 食品分析和增强机器人训练。
+
+- **访问**：通过币安钱包增强器标签或首页横幅访问（需要 Alpha Points ≥ 61）。
+- **奖励**：总奖励池为 5000 万 $XNY（带锁定期），在任务完成和验证后分发。
+- **时间框架**：2025年7月24日 07:00 UTC – 2025年7月31日 07:00 UTC。
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="jul">
+
+## 2025年7月16日
+---
+**活动启动：Codatta 增强者活动第一季第四周**
+
+<br />
+
+为了通过收集超越标签的丰富注释，深入了解 AI 对食品的理解，包括重量、烹饪方法和热量含量。
+
+- **访问**：通过币安钱包增强器标签或首页横幅访问（需要 Alpha Points ≥ 61）。
+- **奖励**：总奖励池为 5000 万 $XNY，在任务完成和验证后分发。
+- **时间框架**：2025年7月16日 13:00 UTC – 2025年7月23日 13:00 UTC。
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="jul">
+
+## 2025年7月9日
+---
+**活动启动：Codatta 增强者活动第一季第三周**
+
+<br />
+
+为了通过收集准备好的食物的注释图像，教授 AI 对人类饮食习惯的细致理解，注重文化和背景的相关性而不仅仅是简单标签。
+
+- **访问**：通过币安钱包增强器标签或首页横幅访问（需要 Alpha Points ≥ 61）。
+- **奖励**：总奖励池为 5000 万 $XNY，在任务完成和验证后分发。
+- **时间框架**：2025年7月9日 13:00 UTC – 2025年7月16日 13:00 UTC。
+
+</div>
+
+<div className="changelog-item" data-type="optimization" data-month="jul">
+
+## 2025年7月7日
+---
+**功能优化：任务系统已恢复**
+
+<br />
+
+任务系统已全面恢复并重新开放。
+
+- **如何**：于 2025年6月30日 暂时下线，现在已全面恢复。
+- **原因**：通过架构升级提升系统稳定性和用户体验。
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="jul">
+
+## 2025年7月2日
+---
+**活动启动：Codatta 增强者活动第一季第二周**
+
+<br />
+
+为了通过在素食、非素食和混合类别中的细致图像标注，扩展 AI 对全球食品文化和偏好的理解。
+
+- **访问**：通过币安钱包增强器标签或首页横幅访问（需要 Alpha Points ≥ 61）。
+- **奖励**：总奖励池为 5000 万 $XNY，在任务完成和验证后分发。
+- **时间框架**：2025年7月2日 13:00 UTC – 2025年7月9日 13:00 UTC。
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="jun">
+
+## 2025年6月25日
+---
+**活动启动：Codatta 增强者活动第一季第一周**
+
+<br />
+
+通过收集注释的食品数据，利用测验激励社区知识，并通过多层次激励结构奖励参与，启动首季。
+
+- **访问**：通过币安钱包增强器标签或首页横幅访问（需要 Alpha Points ≥ 61）。
+- **奖励**：总奖励池为 5000 万 $XNY，在任务完成和验证后分发。
+- **时间框架**：2025年6月25日 13:00 UTC – 2025年7月2日 13:00 UTC。
+
+</div>
+
+{/* 组件定义 - 移动到文件末尾以便于代码组织 */}
+export const ChangelogFilter = () => {
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMenuHovered, setIsMenuHovered] = useState(false);
+
+  useEffect(() => {
+    window.activeTypeFilter = activeFilter;
+  }, [activeFilter]);
+
+  useEffect(() => {
+    const items = document.querySelectorAll('.changelog-item');
+    const activeMonth = window.activeMonthFilter || 'all';
+    
+    items.forEach((item) => {
+      const itemType = item.getAttribute('data-type');
+      const itemMonth = item.getAttribute('data-month');
+      
+      const typeMatch = activeFilter === 'all' || itemType === activeFilter;
+      const monthMatch = activeMonth === 'all' || itemMonth === activeMonth;
+      
+      item.style.display = typeMatch && monthMatch ? '' : 'none';
+    });
+  }, [activeFilter]);
+
+  const filterTypes = [
+    { id: 'all', label: '所有', color: '#6b7280', count: 24 },
+    { id: 'core-feature', label: '核心功能发布', color: '#16A34A', count: 4 },
+    { id: 'optimization', label: '调整与优化', color: '#F59E0B', count: 3 },
+    { id: 'fixes', label: '修复与功能终止', color: '#EF4444', count: 3 },
+    { id: 'campaign', label: '活动启动', color: '#A855F7', count: 14 }
+  ];
+
+  const activeType = filterTypes.find(type => type.id === activeFilter) || filterTypes[0];
+
+  return (
+    <div style={{ marginBottom: '2rem', position: 'relative' }}>
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          padding: '0.625rem 1rem',
+          border: '2px solid #e5e7eb',
+          borderRadius: '0.5rem',
+          background: 'white',
+          cursor: 'pointer',
+          fontSize: '0.875rem',
+          fontWeight: '500',
+          boxShadow: isOpen ? `0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)` : '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+          transition: 'all 0.2s ease',
+          userSelect: 'none',
+          minWidth: '200px'
+        }}
+      >
+        <span
+          style={{
+            width: '12px',
+            height: '12px',
+            borderRadius: '50%',
+            backgroundColor: activeType.color,
+            display: 'inline-block',
+            flexShrink: 0
+          }}
+        />
+        <span style={{ flex: 1 }}>
+          {activeType.label} ({activeType.count})
+        </span>
+        <span
+          style={{
+            display: 'inline-block',
+            width: '0',
+            height: '0',
+            borderLeft: '5px solid transparent',
+            borderRight: '5px solid transparent',
+            borderTop: '6px solid #6b7280',
+            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.2s ease',
+            flexShrink: 0
+          }}
+        />
+      </div>
+      
+      {isOpen && (
+        <div
+          onMouseEnter={() => setIsMenuHovered(true)}
+          onMouseLeave={() => setIsMenuHovered(false)}
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            marginTop: '0.5rem',
+            backgroundColor: 'white',
+            border: `2px solid ${isMenuHovered ? '#9ca3af' : '#e5e7eb'}`,
+            borderRadius: '0.5rem',
+            boxShadow: isMenuHovered 
+              ? '0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1)' 
+              : '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+            zIndex: 1000,
+            minWidth: '280px',
+            overflow: 'hidden',
+            transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
+          }}
+        >
+          {filterTypes.map((type) => (
+            <div
+              key={type.id}
+              onClick={() => {
+                setActiveFilter(type.id);
+                setIsOpen(false);
+              }}
+              style={{
+                padding: '0.75rem 1rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                borderBottom: type.id !== filterTypes[filterTypes.length - 1].id ? '1px solid #f3f4f6' : 'none',
+                backgroundColor: activeFilter === type.id ? '#f9fafb' : 'white',
+                transition: 'background-color 0.15s ease'
+              }}
+              onMouseEnter={(e) => {
+                if (activeFilter !== type.id) {
+                  e.currentTarget.style.backgroundColor = '#f3f4f6';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeFilter !== type.id) {
+                  e.currentTarget.style.backgroundColor = 'white';
+                }
+              }}
+            >
+              <span style={{ flex: 1, fontSize: '0.875rem', fontWeight: activeFilter === type.id ? '600' : '400' }}>
+                {type.label}
+              </span>
+              <span style={{ 
+                fontSize: '0.75rem', 
+                color: '#6b7280',
+                fontWeight: '500'
+              }}>
+                {type.count}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+      
+      {isOpen && (
+        <div
+          onClick={() => setIsOpen(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 999,
+            backgroundColor: 'transparent'
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
+export const MonthFilter = () => {
+  const [activeMonth, setActiveMonth] = useState('all');
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMenuHovered, setIsMenuHovered] = useState(false);
+
+  useEffect(() => {
+    window.activeMonthFilter = activeMonth;
+    const event = new Event('monthFilterChange');
+    window.dispatchEvent(event);
+  }, [activeMonth]);
+
+  useEffect(() => {
+    const handleMonthChange = () => {
+      const items = document.querySelectorAll('.changelog-item');
+      const activeType = window.activeTypeFilter || 'all';
+      
+      items.forEach((item) => {
+        const itemType = item.getAttribute('data-type');
+        const itemMonth = item.getAttribute('data-month');
+        
+        const typeMatch = activeType === 'all' || itemType === activeType;
+        const monthMatch = activeMonth === 'all' || itemMonth === activeMonth;
+        
+        item.style.display = typeMatch && monthMatch ? '' : 'none';
+      });
+    };
+
+    window.addEventListener('monthFilterChange', handleMonthChange);
+    handleMonthChange();
+    
+    return () => {
+      window.removeEventListener('monthFilterChange', handleMonthChange);
+    };
+  }, [activeMonth]);
+
+  const months = [
+    { id: 'all', label: '所有月份', count: 24 },
+    { id: 'dec', label: '十二月', count: 1 },
+    { id: 'nov', label: '十一月', count: 3 },
+    { id: 'oct', label: '十月', count: 6 },
+    { id: 'sep', label: '九月', count: 3 },
+    { id: 'aug', label: '八月', count: 5 },
+    { id: 'jul', label: '七月', count: 5 },
+    { id: 'jun', label: '六月', count: 1 }
+  ];
+
+  const activeMonthData = months.find(month => month.id === activeMonth) || months[0];
+
+  return (
+    <div style={{ marginBottom: '2rem', position: 'relative', marginLeft: '1rem' }}>
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          padding: '0.625rem 1rem',
+          border: '2px solid #e5e7eb',
+          borderRadius: '0.5rem',
+          background: 'white',
+          cursor: 'pointer',
+          fontSize: '0.875rem',
+          fontWeight: '500',
+          boxShadow: isOpen ? `0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)` : '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+          transition: 'all 0.2s ease',
+          userSelect: 'none',
+          minWidth: '200px'
+        }}
+      >
+        <span style={{ flex: 1 }}>
+          {activeMonthData.label} ({activeMonthData.count})
+        </span>
+        <span
+          style={{
+            display: 'inline-block',
+            width: '0',
+            height: '0',
+            borderLeft: '5px solid transparent',
+            borderRight: '5px solid transparent',
+            borderTop: '6px solid #6b7280',
+            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.2s ease',
+            flexShrink: 0
+          }}
+        />
+      </div>
+      
+      {isOpen && (
+        <div
+          onMouseEnter={() => setIsMenuHovered(true)}
+          onMouseLeave={() => setIsMenuHovered(false)}
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            marginTop: '0.5rem',
+            backgroundColor: 'white',
+            border: `2px solid ${isMenuHovered ? '#9ca3af' : '#e5e7eb'}`,
+            borderRadius: '0.5rem',
+            boxShadow: isMenuHovered 
+              ? '0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1)' 
+              : '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+            zIndex: 1000,
+            minWidth: '280px',
+            overflow: 'hidden',
+            transition: 'border-color 0.2s ease, box-shadow 0.2s ease'
+          }}
+        >
+          {months.map((month) => (
+            <div
+              key={month.id}
+              onClick={() => {
+                setActiveMonth(month.id);
+                setIsOpen(false);
+              }}
+              style={{
+                padding: '0.75rem 1rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                borderBottom: month.id !== months[months.length - 1].id ? '1px solid #f3f4f6' : 'none',
+                backgroundColor: activeMonth === month.id ? '#f9fafb' : 'white',
+                transition: 'background-color 0.15s ease'
+              }}
+              onMouseEnter={(e) => {
+                if (activeMonth !== month.id) {
+                  e.currentTarget.style.backgroundColor = '#f3f4f6';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeMonth !== month.id) {
+                  e.currentTarget.style.backgroundColor = 'white';
+                }
+              }}
+            >
+              <span style={{ flex: 1, fontSize: '0.875rem', fontWeight: activeMonth === month.id ? '600' : '400' }}>
+                {month.label}
+              </span>
+              <span style={{ 
+                fontSize: '0.75rem', 
+                color: '#6b7280',
+                fontWeight: '500'
+              }}>
+                {month.count}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+      
+      {isOpen && (
+        <div
+          onClick={() => setIsOpen(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 999,
+            backgroundColor: 'transparent'
+          }}
+        />
+      )}
+    </div>
+  );
+};
