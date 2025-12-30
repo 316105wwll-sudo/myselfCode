@@ -7,71 +7,52 @@ on:
 
 jobs:
   translate:
-    # 防止翻译分支再次触发，避免死循环
     if: "!contains(github.ref_name, 'auto-translate')"
-
     runs-on: ubuntu-latest
 
     permissions:
       contents: write
-      pull-requests: write
 
     steps:
-      # Step 1：检出触发 push 的原始分支
+      # Step 1: 检出触发 push 的原始分支
       - name: Checkout source branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
 
-      # Step 2：Node 环境
+      # Step 2: Node 环境
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # Step 3：安装依赖
+      # Step 3: 安装依赖
       - name: Install deps
         run: |
           npm init -y
           npm install openai fs-extra
 
-      # Step 4：执行翻译
+      # Step 4: 执行翻译
       - name: Run translation
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: node translate.js
+        timeout-minutes: 60
 
-      # Step 5：创建 / 切换翻译分支并提交
+      # Step 5: 提交翻译内容
       - name: Commit translated files
         run: |
-          SRC_BRANCH="${GITHUB_REF_NAME}"
-          TRANS_BRANCH="${SRC_BRANCH}-auto-translate"
+          TRANS_BRANCH="${GITHUB_REF_NAME}-auto-translate"
 
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          # 分支存在就切换，不存在就新建
-          if git show-ref --verify --quiet "refs/heads/$TRANS_BRANCH"; then
-            git checkout "$TRANS_BRANCH"
-          else
-            git checkout -b "$TRANS_BRANCH"
-          fi
+          # 基于最新的 main 重建翻译分支，避免冲突
+          git fetch origin main
+          git checkout -B "$TRANS_BRANCH" origin/main
 
-          git add changelog || true
+          # 提交翻译文件
+          git add cn/** ko/** ja/** || echo "No translation files to commit"
 
-
-          git commit -m "chore: auto translate ($(date '+%Y-%m-%d %H:%M'))" || exit 0
-          git push origin "$TRANS_BRANCH"
-
-      # Step 6：创建 PR → main
-      - name: Create PR to main
-        uses: peter-evans/create-pull-request@v6
-        with:
-          head: ${{ github.ref_name }}-auto-translate
-          base: main
-          title: "Auto translation from ${{ github.ref_name }}"
-          body: |
-            🤖 This PR was automatically generated.
-
-            Source branch: `${{ github.ref_name }}`
-            Target branch: `main`
+          # 强制推送到翻译分支
+          git push origin "$TRANS_BRANCH" --force
