@@ -27,6 +27,7 @@ const TARGET_LANGS = [
   },
 ];
 
+
 // OpenAI 客户端
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
