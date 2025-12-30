@@ -41,7 +41,7 @@ jobs:
 
       # Step 5: 提交翻译内容
       - name: Commit translated files
-        run: |
+        run: | 
           TRANS_BRANCH="${GITHUB_REF_NAME}-auto-translate"
 
           git config user.name "github-actions"
