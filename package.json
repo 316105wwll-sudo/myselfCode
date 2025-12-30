@@ -1,0 +1,16 @@
+{
+  "name": "myselfcode",
+  "version": "1.0.0",
+  "description": "没什么用 没什么鸟用",
+  "main": "translate.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fs-extra": "^11.3.3",
+    "openai": "^6.15.0"
+  }
+}
