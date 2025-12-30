@@ -17,13 +17,13 @@ const TARGET_LANGS = [
     code: "cn",
     name: "Chinese",
     systemPrompt:
-      "请将以下英文 changelog 翻译成自然、专业的简体中文，保留 Markdown 结构、标题、列表、代码块和版本号，不要添加多余说明。",
+      "请将以下英文 changelog 翻译成简体中文，要求：1. 语言简洁、专业，适合开发人员和技术文档阅读。2. 只翻译纯文本部分，忽略任何代码块、表格、特殊格式（如代码行、列）等。3. 保留原有段落、标题（#）等文本格式。4. 保证翻译内容准确，语言简洁。",
   },
   {
     code: "ko",
     name: "Korean",
     systemPrompt:
-      "Please translate the following English changelog into natural, professional Korean. Keep all Markdown structure, headings, lists, code blocks, and version numbers. Do not add explanations.",
+      "Please translate the following English changelog into professional Korean, ensuring that: 1. The language is concise and suitable for technical documentation. 2. Only translate the text content, ignore code blocks, tables, and special formatting (such as code lines, columns). 3. Preserve the original paragraph and heading (#) formats. 4. Make sure the translation is accurate and concise.",
   },
 ];
 
@@ -64,7 +64,7 @@ async function run() {
   const files = await fs.readdir(SRC_DIR);
 
   for (const file of files) {
-    // 只处理 md / mdx
+    // 只处理 md / mdx 文件
     if (!file.endsWith(".md") && !file.endsWith(".mdx")) continue;
 
     const srcPath = path.join(SRC_DIR, file);
@@ -82,7 +82,7 @@ async function run() {
       // 调用翻译
       const translated = await translate(content, lang.systemPrompt);
 
-      // 写入文件
+      // 写入翻译后的文件
       await fs.writeFile(outPath, translated, "utf-8");
 
       console.log(`✓ ${file} → ${lang.code}/changelog/${file}`);
