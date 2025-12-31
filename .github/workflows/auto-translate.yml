@@ -1,4 +1,4 @@
-name: Auto Translate (PR to Main)
+name: Auto Translate (Push to New Branch)
 
 on:
   push:
@@ -14,45 +14,55 @@ jobs:
       contents: write
 
     steps:
-      # Step 1: 检出触发 push 的原始分支
+      # 1️⃣ 检出触发的源分支
       - name: Checkout source branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
 
-      # Step 2: Node 环境
+      # 2️⃣ Node 环境
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # Step 3: 安装依赖
+      # 3️⃣ 安装依赖
       - name: Install deps
         run: |
           npm init -y
           npm install openai fs-extra
 
-      # Step 4: 执行翻译
+      # 4️⃣ 执行翻译（生成 cn/ ko/ 文件）
       - name: Run translation
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: node translate.js
         timeout-minutes: 60
 
-      # Step 5: 提交翻译内容
-      - name: Commit translated files
-        run: | 
-          TRANS_BRANCH="${GITHUB_REF_NAME}-auto-translate"
+      # 5️⃣ 创建【带时间戳】的翻译分支并 push
+      - name: Push translated files
+        run: |
+          # 时间戳（UTC，保证稳定）
+          TS=$(date -u '+%Y%m%d-%H%M%S')
+
+          SRC_BRANCH="${GITHUB_REF_NAME}"
+          TRANS_BRANCH="${SRC_BRANCH}-auto-translate-${TS}"
 
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          # 基于最新的 main 重建翻译分支，避免冲突
-          git fetch origin main
-          git checkout -B "$TRANS_BRANCH" origin/main
+          # 新建翻译分支（每次都是新的）
+          git checkout -b "$TRANS_BRANCH"
 
-          # 提交翻译文件
-          git add cn/** ko/** ja/** || echo "No translation files to commit"
+          # 确保目录存在（防止 glob 报错）
+          mkdir -p cn/changelog
+          mkdir -p ko/changelog
 
-          # 强制推送到翻译分支
-          git push origin "$TRANS_BRANCH" --force
+          # 只 add 翻译文件
+          git add cn/** ko/**
+
+          # 没变化就不提交
+          git diff --cached --quiet || git commit -m "chore: auto translate (${TS})"
+
+          # 推送新分支
+          git push origin "$TRANS_BRANCH"
