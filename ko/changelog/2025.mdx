@@ -1,0 +1,530 @@
+---
+title: "변경 로그"
+description: "이 변경 로그는 2025년 Codatta의 모든 업데이트, 수정 및 신규 기능을 문서화합니다."
+---
+
+<div style={{
+  backgroundColor: '#ffffff',
+  border: '1px solid #e5e7eb',
+  borderRadius: '0.75rem',
+  padding: '0.875rem 1.25rem',
+  marginBottom: '2rem',
+  boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
+}}>
+  <div style={{ 
+    display: 'flex', 
+    alignItems: 'center', 
+    flexWrap: 'wrap', 
+    gap: '1rem',
+    marginBottom: '0.1rem'
+  }}>
+    <ChangelogFilter />
+    <MonthFilter />
+  </div>
+  
+  {(() => {
+    const ShowResult = () => {
+      const [num, setNum] = useState(0);
+      useEffect(() => {
+        if (typeof document === 'undefined') return;
+        const update = () => {
+          try {
+            const items = document.querySelectorAll('.changelog-item');
+            let count = 0;
+            items.forEach(item => {
+              if (item.style.display !== 'none') count++;
+            });
+            setNum(count);
+          } catch {}
+        };
+        update();
+        const id = setInterval(update, 2000);
+        return () => clearInterval(id);
+      }, []);
+      return (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          padding: '0.5rem 0.875rem',
+          backgroundColor: '#f9fafb',
+          borderRadius: '0.5rem',
+          fontSize: '0.8125rem',
+          color: '#6b7280',
+          border: '1px solid #e5e7eb',
+          display: 'inline-flex',
+          fontWeight: '500',
+          letterSpacing: '0.01em'
+        }}>
+          <span style={{
+            display: 'inline-block',
+            width: '6px',
+            height: '6px',
+            borderRadius: '50%',
+            backgroundColor: '#10b981',
+            marginRight: '0.5rem',
+            flexShrink: 0
+          }}></span>
+          <strong style={{color:'#111827', fontWeight:'600', marginRight: '0.25rem'}}>{num}</strong>
+          <span>결과{num !== 1 ? '들' : ''}</span>
+        </div>
+      );
+    };
+    return <ShowResult />;
+  })()}
+</div>
+<div className="changelog-item" data-type="core-feature" data-month="dec">
+
+## 2025년 12월 5일
+---
+**인센티브 진화: 장기 생태계 관리를 위한 보상 잠금 기능**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+고인센티브 작업(예: 에어드랍 또는 프론티어 캠페인)에서 발생하는 보상을 위한 선택적 잠금 기능.
+
+- **트리거:** 캠페인 후 보상이 잔액에 입금됩니다.
+- **잠금:** 자산 페이지를 통해 스마트 계약에 보상을 잠급니다.
+- **해제:** 잠금 기간 후, 한 번의 클릭으로 지갑에 보상을 청구합니다.
+
+이것은 우리의 인센티브 시스템을 세분화된 관리로 발전시키는 중요한 단계입니다. 이는 고 보상 시나리오에서 유동성을 관리할 수 있는 도구를 제공하여 단기 참여와 생태계의 장기 건강을 균형 있게 유지합니다.
+
+</div>
+<div className="changelog-item" data-type="core-feature" data-month="dec">
+
+## 2025년 12월 4일
+---
+**인센티브 진화: 장기 생태계 관리를 위한 보상 잠금 기능**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+고인센티브 작업(예: 에어드랍 또는 프론티어 캠페인)에서 발생하는 보상을 위한 선택적 잠금 기능.
+
+- **트리거:** 캠페인 후 보상이 잔액에 입금됩니다.
+- **잠금:** 자산 페이지를 통해 스마트 계약에 보상을 잠급니다.
+- **해제:** 잠금 기간 후, 한 번의 클릭으로 지갑에 보상을 청구합니다.
+
+이것은 우리의 인센티브 시스템을 세분화된 관리로 발전시키는 중요한 단계입니다. 이는 고 보상 시나리오에서 유동성을 관리할 수 있는 도구를 제공하여 단기 참여와 생태계의 장기 건강을 균형 있게 유지합니다.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="nov">
+
+## 2025년 11월 24일
+---
+**캠페인 시작: 에어드랍 시즌 2**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+물리학, 금융 및 다중 모드 분야의 학술 등급 데이터 세트를 체계적으로 수집하고 세 가지 새로운 프론티어를 위해 고품질 데이터 파이프라인을 구축.
+
+- **행동:** 1M $XNY 상금 풀로 에어드랍 시즌 2 시작 (3개월 선형 분배).
+- **새로운 프론티어:**
+  - **고급 물리학 문제:** 현재 AI가 정확히 답변할 수 없는 고난이도 물리학 문제를 제출하는 도메인 전문가를 위한 문제.
+  - **암호화폐 및 주식 정보:** 암호화폐 및 주식 투자 결정과 관련하여 AI에 신뢰할 수 있는 정보를 제공.
+  - **실제 사진:** 주석이 달린 메타데이터를 포함한 실제 사진을 AI에 제공.
+- **보상 구조:** 작업 완료에 대해 90%, 리더보드 순위에 대해 10% 제공.
+- **타임라인:** 2025년 11월 24일, 09:00 UTC – 2025년 12월 8일, 09:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="core-feature" data-month="nov">
+
+## 2025년 11월 5일
+---
+**계정 시스템 업그레이드: DID 공식 런칭**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+탈중앙화 식별자(DID)와 계정 바인딩을 가능하게 하는 기초 업그레이드.
+
+- **바인딩:** Codatta에 다음 로그인 시 온체인 DID의 셀프 서비스 통합.
+- **연관:** 바인딩된 DID는 모든 작업, 데이터 기여 및 보상 분배에 대한 통일된 기본 키 역할을 하여 체계적으로 인덱싱합니다.
+- **계통:** 온체인 및 오프체인 활동 모두의 완전한 추적성과 검증 가능성을 제공하며, 변경 불가능한 데이터 출처를 확립합니다.
+
+이 배포는 검증 가능한 데이터 경제의 기술적 초석을 마련합니다. 각 기여자에게 지속적인 고유 디지털 신원을 제공하여 세분화된 기여 귀속, 명확한 소유권 검증 및 프로토콜 수준에서의 투명한 인센티브 분배를 가능하게 합니다.
+
+</div>
+
+<div className="changelog-item" data-type="fixes" data-month="nov">
+
+## 2025년 11월 3일
+---
+**퀘스트 시스템 조정: 암호화폐 프론티어 QUEST 모듈 중단**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+암호화폐 프론티어 QUEST 모듈과 모든 관련 작업(제출, 검증 및 보상 사냥)이 오프라인 처리되었습니다.
+
+- **이유:** 이 모듈은 현재 제품 로드맵에 따라 계획된 수명을 완료했습니다. 중단은 시스템 간소화와 향후 기능 출시를 위한 자원 재조정을 지원합니다.
+- **참고:** 사용자의 이력에 기록된 기여 내역 및 이 모듈에서 획득한 보상은 그대로 유지됩니다. 이 변경 사항은 다른 프론티어 모듈에 영향을 미치지 않습니다.
+
+</div>
+
+<div className="changelog-item" data-type="fixes" data-month="oct">
+
+## 2025년 10월 24일
+---
+**프론티어 시스템 조정: 로봇 프론티어 중단**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+로봇 프론티어가 공식적으로 중단되었습니다. 이 조치는 프론트엔드 진입점에만 영향을 미칩니다. 모든 과거 기여 데이터는 그대로 유지되며 접근 가능합니다.
+
+- **이유:** 이 결정은 시스템 간소화를 위한 지속적인 노력의 일환으로, 가장 우선적인 활성 프론티어에 자원과 사용자 관심을 집중하기 위함입니다. 로봇 프론티어는 계획된 탐사 단계를 마쳤으며, 중단을 통해 노력을 통합할 수 있게 되었습니다.
+- **참고:** 사용자의 과거 기여 및 로봇 프론티어에서 획득한 보상은 보존되며 기여 이력에서 검토할 수 있습니다. 다른 프론티어나 플랫폼 기능에는 영향을 미치지 않습니다.
+
+</div>
+
+<div className="changelog-item" data-type="optimization" data-month="oct">
+
+## 2025년 10월 23일
+---
+**안티 스팸 강화: 일일 제출 한도 구현**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+작업 스팸을 방지하기 위한 새로운 플랫폼 전반의 보안 정책.
+
+- **방법:** 각 작업에 대해 구성 가능한 일일 제출 한도를 시행합니다.
+- **이유:** 시스템 자원을 보호하고, 모든 기여자에게 공정한 참여를 보장하며, 작업 생태계의 장기적인 건강과 공정성을 유지하기 위함입니다.
+
+</div>
+
+<div className="changelog-item" data-type="fixes" data-month="oct">
+
+## 2025년 10월 20일
+---
+**프론티어 시스템 조정: 암호화폐 프론티어 중단**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+암호화폐 프론티어가 공식적으로 중단되었습니다. 이 조치는 프론트엔드 진입점에만 영향을 미칩니다. 모든 과거 기여 데이터는 그대로 유지되며 접근 가능합니다.
+
+- **이유:** 이 결정은 시스템 간소화를 위한 지속적인 노력의 일환으로, 가장 우선적인 활성 프론티어에 자원과 사용자 관심을 집중하기 위함입니다. 암호화폐 프론티어는 계획된 탐사 단계를 마쳤으며, 중단을 통해 노력을 통합할 수 있게 되었습니다.
+- **참고:** 사용자의 과거 기여 및 암호화폐 프론티어에서 획득한 보상은 보존되며 기여 이력에서 검토할 수 있습니다. 다른 프론티어나 플랫폼 기능에는 영향을 미치지 않습니다.
+
+</div>
+
+<div className="changelog-item" data-type="optimization" data-month="oct">
+
+## 2025년 10월 15일
+---
+**시스템 관리: 플랫폼 블랙리스트 제어 구현**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+플랫폼에 새로운 블랙리스트 제어 기능이 구현되었습니다.
+
+- **방법:** 지정된 관리자들이 이제 악의적인 계정을 제한하기 위해 블랙리스트 규칙을 적용할 수 있습니다.
+- **이유:** 플랫폼 보안을 강화하고 기여자의 이익을 보호하며 생태계의 공정성을 유지하기 위해서입니다.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="oct">
+
+## 2025년 10월 13일
+---
+**캠페인 시작: 에어드랍 시즌 1**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+고보상 메커니즘과 안티 스팸 강화를 통해 고품질의 구조화된 데이터를 수집하고, 유효성과 학문적 가치를 보장하며, 장기 기여자를 보상하고 플랫폼의 데이터 생태계를 다변화하기 위한 다섯 개 새로운 프론티어 모듈을 통해.
+
+- **행동:** 2.5M $XNY 상금 풀 및 포인트 보상으로 에어드랍 시즌 1 시작.
+- **새로운 프론티어:**
+  - **모델 비교:** 다양한 AI 모델 간의 성과 지표 및 비즈니스 결과를 비교하여 최적의 솔루션 또는 혼합 솔루션을 식별.
+  - **LLM의 실수 식별:** LLM 출력에서의 추론, 사실 및 논리적 오류 식별하여 모델 최적화를 지원.
+  - **LLM의 실수 수정:** LLM이 실수로부터 학습하도록 도와주는 수정 데이터를 수집하기 위해.
+  - **식품 과학:** 식품 과학 및 영양 기능에 대한 연구 데이터를 수집하여 해당 분야의 혁신을 촉진.
+  - **생애 로그 캔버스:** 개인 행동 및 건강 관련 데이터 추적 및 기록하여 행동 및 관련 연구를 지원.
+- **보상 구조:** 제출 평가에 따라 보상이 순위 매겨지고 캠페인 후 분배됩니다. 악의적인 제출은 데이터 품질을 보장하기 위해 처벌됩니다.
+- **타임라인:** 2025년 10월 13일, 09:00 UTC - 2025년 10월 27일, 09:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="core-feature" data-month="oct">
+
+## 2025년 10월 10일
+---
+**기능 출시: 프론티어별 보상 활동**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+프론티어에 대해 구성 가능한 보상 활동이 제공되어 추가 고부가가치 인센티브가 주어집니다.
+
+- **방법:** 선택된 프론티어 작업은 기본 포인트와 무관하게 추가 보상을 $XNY 또는 USDT로 지급합니다. 활동 파라미터(보상 금액, 기간, 목표)는 각 프론티어별로 설정되어 해당 홈페이지에 표시됩니다.
+- **이유:** 고부가 가치 데이터 작업에 대한 참여를 촉진하고, 데이터 품질 및 생태계 참여를 개선하기 위해 목표 인센티브를 제공하기 위함입니다.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="sep">
+
+## 2025년 9월 26일
+---
+**캠페인 시작: Codatta 부스터 캠페인 시즌 3 4주차**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+신뢰할 수 있는 다중 도메인 데이터 수집을 통해 AI 개발을 가속화하고, 커뮤니티 주도의 분산형 AI 지식 구축을 촉진합니다.
+
+- **접근:** Binance Wallet Booster 탭 또는 홈페이지 배너를 통해 접근 가능 (Alpha Points ≥ 61 필요).
+- **보상:** 50,000,000 $XNY의 총 상금 풀 (잠금 기간 포함), 작업 완료 및 검증 후 분배.
+- **타임라인:** 2025년 9월 26일, 07:00 UTC – 2025년 10월 3일, 07:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="sep">
+
+## 2025년 9월 12일
+---
+**캠페인 시작: Codatta 부스터 캠페인 시즌 3 3주차**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+AI 교육 및 검증을 위해 라이프, 로봇공학, 암호화폐, 모델 비교 및 지문 인증에 대한 교차 도메인 데이터를 수집합니다.
+
+- **접근:** Binance Wallet Booster 탭 또는 홈페이지 배너를 통해 접근 가능 (Alpha Points ≥ 61 필요).
+- **보상:** 50,000,000 $XNY의 총 상금 풀 (잠금 기간 포함), 작업 완료 및 검증 후 분배.
+- **타임라인:** 2025년 9월 12일, 07:00 UTC – 2025년 9월 19일, 07:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="sep">
+
+## 2025년 9월 5일
+---
+**캠페인 시작: Codatta 부스터 캠페인 시즌 3 2주차**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+AI 교육 및 검증을 위해 라이프, 로봇공학 및 암호화폐에 대한 교차 도메인 데이터를 수집하고 주석을 추가합니다.
+
+- **접근:** Binance Wallet Booster 탭 또는 홈페이지 배너를 통해 접근 가능 (Alpha Points ≥ 61 필요).
+- **보상:** 50,000,000 $XNY의 총 상금 풀 (잠금 기간 포함), 작업 완료 및 검증 후 분배.
+- **타임라인:** 2025년 9월 5일, 07:00 UTC – 2025년 9월 12일, 07:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="core-feature" data-month="aug">
+
+## 2025년 8월 28일
+---
+**기능 출시: 사용자 데이터 프로필**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+사용자 정보 모듈 내에 새로운 데이터 프로필 기능을 도입합니다.
+
+- **방법:** 사용자 정보 > 데이터 프로필을 통해 전체 제출, 획득한 보상 및 기여 통계를 시각화한 대시보드를 확인합니다.
+- **이유:** 기여에 대한 투명성을 제공하고, 가시적 진행 추적을 통해 참여를 강화하며, 장기적인 참여를 지원하기 위해서입니다.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="aug">
+
+## 2025년 8월 22일
+---
+**캠페인 시작: Codatta 부스터 캠페인 시즌 3 1주차**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+분산형 AI 교육을 위한 교차 도메인 주석이 달린 데이터의 기초를 구축합니다.
+
+- **접근:** Binance Wallet Booster 탭 또는 홈페이지 배너를 통해 접근 가능 (Alpha Points ≥ 61 필요).
+- **보상:** 50,000,000 $XNY의 총 상금 풀 (잠금 기간 포함), 작업 완료 및 검증 후 분배.
+- **타임라인:** 2025년 8월 22일, 07:00 UTC – 2025년 8월 29일, 07:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="aug">
+
+## 2025년 8월 15일
+---
+**캠페인 시작: Codatta 부스터 캠페인 시즌 2 4주차**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+분산형 AI 교육을 위해 식품 AI, 로봇 상호작용 및 CEX 온체인 데이터의 도메인 특정 데이터 세트를 체계적으로 주석 추가하고 확장합니다.
+
+- **접근:** Binance Wallet Booster 탭 또는 홈페이지 배너를 통해 접근 가능 (Alpha Points ≥ 61 필요).
+- **보상:** 50,000,000 $XNY의 총 상금 풀 (잠금 기간 포함), 작업 완료 및 검증 후 분배.
+- **타임라인:** 2025년 8월 15일, 07:00 UTC – 2025년 8월 22일, 07:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="aug">
+
+## 2025년 8월 8일
+---
+**캠페인 시작: Codatta 부스터 캠페인 시즌 2 3주차**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+프로젝트 학습, 식품 AI 판단, 로봇 주석 및 CEX 데이터 확장을 포함한 네 가지 주요 영역에서 체계적으로 주석이 달린 데이터를 수집합니다.
+
+- **접근:** Binance Wallet Booster 탭 또는 홈페이지 배너를 통해 접근 가능 (Alpha Points ≥ 61 필요).
+- **보상:** 50,000,000 $XNY의 총 상금 풀 (잠금 기간 포함), 작업 완료 및 검증 후 분배.
+- **타임라인:** 2025년 8월 8일, 07:00 UTC – 2025년 8월 15일, 07:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="aug">
+
+## 2025년 8월 1일
+---
+**캠페인 시작: Codatta 부스터 캠페인 시즌 2 2주차**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+AI 식품 모델 비교, 로봇 상호작용 주석 및 CEX 핫 월렛 데이터 라벨링을 통해 세 가지 핵심 도메인에서 주석을 달린 데이터를 수집합니다.
+
+- **접근:** Binance Wallet Booster 탭 또는 홈페이지 배너를 통해 접근 가능 (Alpha Points ≥ 61 필요).
+- **보상:** 50,000,000 $XNY의 총 상금 풀 (잠금 기간 포함), 작업 완료 및 검증 후 분배.
+- **타임라인:** 2025년 8월 1일, 07:00 UTC – 2025년 8월 8일, 07:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="jul">
+
+## 2025년 7월 24일
+---
+**캠페인 시작: Codatta 부스터 캠페인 시즌 2 1주차**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+주석이 달린 실제 상호작용 데이터를 통해 AI 식품 분석을 검증하고 로봇 교육을 향상시킵니다.
+
+- **접근:** Binance Wallet Booster 탭 또는 홈페이지 배너를 통해 접근 가능 (Alpha Points ≥ 61 필요).
+- **보상:** 50,000,000 $XNY의 총 상금 풀 (잠금 기간 포함), 작업 완료 및 검증 후 분배.
+- **타임라인:** 2025년 7월 24일, 07:00 UTC – 2025년 7월 31일, 07:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="jul">
+
+## 2025년 7월 16일
+---
+**캠페인 시작: Codatta 부스터 캠페인 시즌 1 4주차**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+음식에 대한 AI의 이해를 심화시키기 위해, 레이블을 넘어 중량, 조리 방법, 칼로리 내용을 포함한 풍부한 주석을 수집합니다.
+
+- **접근:** Binance Wallet Booster 탭 또는 홈페이지 배너를 통해 접근 가능 (Alpha Points ≥ 61 필요).
+- **보상:** 50,000,000 $XNY의 총 상금 풀, 작업 완료 및 검증 후 분배.
+- **타임라인:** 2025년 7월 16일, 13:00 UTC – 2025년 7월 23일, 13:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="jul">
+
+## 2025년 7월 9일
+---
+**캠페인 시작: Codatta 부스터 캠페인 시즌 1 3주차**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+문화적 및 맥락적 관련성을 고려하여 즉석 식품의 주석이 달린 이미지를 수집하여 AI의 인간 식습관에 대한 세밀한 이해를 가르치기 위해.
+
+- **접근:** Binance Wallet Booster 탭 또는 홈페이지 배너를 통해 접근 가능 (Alpha Points ≥ 61 필요).
+- **보상:** 50,000,000 $XNY의 총 상금 풀, 작업 완료 및 검증 후 분배.
+- **타임라인:** 2025년 7월 9일, 13:00 UTC – 2025년 7월 16일, 13:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="optimization" data-month="jul">
+
+## 2025년 7월 7일
+---
+**기능 최적화: 퀘스트 시스템 복원**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+퀘스트 시스템이 완전히 복원되어 재개되었습니다.
+
+- **방법:** 2025년 6월 30일에 일시적으로 오프라인 처리되었으며, 이제 포괄적으로 복원되었습니다.
+- **이유:** 아키텍처 업그레이드를 통해 시스템 안정성과 사용자 경험을 향상시키기 위해.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="jul">
+
+## 2025년 7월 2일
+---
+**캠페인 시작: Codatta 부스터 캠페인 시즌 1 2주차**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+세계 음식 문화와 선호도를 AI가 이해하도록 하기 위해 채식, 비채식 및 혼합 카테고리 전반에 걸쳐 세밀한 이미지 라벨링을 수행합니다.
+
+- **접근:** Binance Wallet Booster 탭 또는 홈페이지 배너를 통해 접근 가능 (Alpha Points ≥ 61 필요).
+- **보상:** 50,000,000 $XNY의 총 상금 풀, 작업 완료 및 검증 후 분배.
+- **타임라인:** 2025년 7월 2일, 13:00 UTC – 2025년 7월 9일, 13:00 UTC.
+
+</div>
+
+<div className="changelog-item" data-type="campaign" data-month="jun">
+
+## 2025년 6월 25일
+---
+**캠페인 시작: Codatta 부스터 캠페인 시즌 1 1주차**
+
+<br />
+
+<div style={{ marginTop: "1rem" }}></div>
+
+주석이 달린 식품 데이터를 수집하고, 퀴즈를 통한 커뮤니티 지식 참여를 유도하며, 다단계 인센티브 구조를 통해 참여를 보상하는 첫 번째 시즌을 시작합니다.
+
+- **접근:** Binance Wallet Booster 탭 또는 홈페이지 배너를 통해 접근 가능 (Alpha Points ≥ 61 필요).
+- **보상:** 50,000,000 $XNY의 총 상금 풀, 작업 완료 및 검증 후 분배.
+- **타임라인:** 2025년 6월 25일, 13:00 UTC – 2025년 7월 2일, 13:00 UTC.
+
+</div>
