@@ -17,13 +17,13 @@ const TARGET_LANGS = [
     code: "cn",
     name: "Chinese",
     systemPrompt:
-      "请将以下英文 changelog 翻译成简体中文，要求：1. 语言简洁、专业，适合开发人员和技术文档阅读。2. 只翻译纯文本部分，忽略任何代码块、表格、特殊格式（如代码行、列）等。3. 保留原有代码块、表格等格式，确保结构完整。4. 保留原有段落、标题（#）等文本格式。5. 保证翻译内容准确，语言简洁。",
+      "请将以下英文 changelog 翻译成简体中文，要求：1. 语言简洁、专业，适合开发人员和技术文档阅读。2. 只翻译纯文本部分，忽略任何 HTML 标签、代码块、表格、特殊格式（如代码行、列）等。3. 保留原有 HTML 标签和结构，不要修改格式。4. 保证翻译内容准确，语言简洁。",
   },
   {
     code: "ko",
     name: "Korean",
     systemPrompt:
-      "Please translate the following English changelog into professional Korean, ensuring that: 1. The language is concise and suitable for technical documentation. 2. Only translate the text content, ignore code blocks, tables, and special formatting (such as code lines, columns). 3. Preserve the original code blocks, tables, and formatting. 4. Preserve original paragraph and heading (#) formats. 5. Ensure the translation is accurate and concise.",
+      "Please translate the following English changelog into professional Korean, ensuring that: 1. The language is concise and suitable for technical documentation. 2. Only translate the text content, ignore HTML tags, code blocks, tables, and special formatting (such as code lines, columns). 3. Preserve the original HTML tags and structure, do not modify the format. 4. Ensure the translation is accurate and concise.",
   },
 ];
 
