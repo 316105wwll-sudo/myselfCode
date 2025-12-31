@@ -1,0 +1,2 @@
+cn/changelog/2025.mdx
+ko/changelog/2025.mdx
