@@ -4,124 +4,65 @@ on:
   push:
     branches-ignore:
       - main
-    # 仅监听 changelog 目录/翻译脚本变更，避免无意义触发
-    paths:
-      - 'changelog/**'
-      - 'translate.js'
 
 jobs:
   translate:
     if: "!contains(github.ref_name, 'auto-translate')"
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
-      pull-requests: read # 可选，若后续要自动提PR可加
 
     steps:
-      # 1️⃣ 检出触发的源分支（优化：拉取完整历史，避免分支创建问题）
+      # 1️⃣ 检出触发的源分支
       - name: Checkout source branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
-          fetch-depth: 0 # 拉取完整提交历史，确保分支创建正常
 
-      # 2️⃣ Node 环境（优化：缓存依赖，加速安装）
-      - name: Setup Node.js
+      # 2️⃣ Node 环境
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm' # 缓存node_modules，后续运行更快
-          cache-dependency-path: './package-lock.json' # 精准缓存
 
-      # 3️⃣ 安装依赖（核心优化：避免覆盖现有package.json）
-      - name: Install dependencies
+      # 3️⃣ 安装依赖
+      - name: Install deps
         run: |
-          # 仅当package.json不存在时初始化，防止覆盖已有配置
-          if [ ! -f "package.json" ]; then
-            npm init -y
-          fi
-          # 安装依赖（优先用package-lock.json锁定版本）
+          npm init -y
           npm install openai fs-extra
-        # 失败时重试，提升稳定性
-        continue-on-error: false
-        retry:
-          max_attempts: 2
-          delay_seconds: 10
 
-      # 4️⃣ 前置检查：确认翻译脚本存在
-      - name: Check translation script exists
-        run: |
-          if [ ! -f "translate.js" ]; then
-            echo "❌ 翻译脚本 translate.js 不存在！"
-            exit 1
-          fi
-          echo "✅ 翻译脚本存在，开始执行翻译"
-
-      # 5️⃣ 执行翻译（优化：增加日志、延长超时，捕获错误）
-      - name: Run translation script
+      # 4️⃣ 执行翻译（生成 cn/ ko/ 文件）
+      - name: Run translation
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          NODE_ENV: production # 生产环境运行
-        run: |
-          # 打印环境信息，方便调试
-          echo "Node版本: $(node -v)"
-          echo "NPM版本: $(npm -v)"
-          # 执行脚本并输出详细日志
-          node translate.js 2>&1 | tee translation.log
+        run: node translate.js
         timeout-minutes: 60
-        # 翻译失败时终止流程（避免推送空分支）
-        continue-on-error: false
 
-      # 6️⃣ 创建带时间戳的翻译分支并推送（核心优化：健壮性）
-      - name: Push translated files to new branch
+      # 5️⃣ 创建【带时间戳】的翻译分支并 push
+      - name: Push translated files
         run: |
-          # 生成UTC时间戳（避免时区问题）
+          # 时间戳（UTC，保证稳定）
           TS=$(date -u '+%Y%m%d-%H%M%S')
+
           SRC_BRANCH="${GITHUB_REF_NAME}"
-          # 清理分支名特殊字符（避免非法分支名）
-          TRANS_BRANCH=$(echo "${SRC_BRANCH}-auto-translate-${TS}" | sed -e 's/[^a-zA-Z0-9_\-]/-/g')
+          TRANS_BRANCH="${SRC_BRANCH}-auto-translate-${TS}"
 
-          # 配置Git用户（必选）
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
 
-          # 切换并创建新分支
+          # 新建翻译分支（每次都是新的）
           git checkout -b "$TRANS_BRANCH"
 
-          # 确保翻译目录存在（防止git add报错）
-          mkdir -p cn/changelog ko/changelog
+          # 确保目录存在（防止 glob 报错）
+          mkdir -p cn/changelog
+          mkdir -p ko/changelog
 
-          # 仅添加翻译生成的文件（精准控制，避免多余提交）
-          git add \
-            cn/changelog/*.md \
-            cn/changelog/*.mdx \
-            ko/changelog/*.md \
-            ko/changelog/*.mdx
+          # 只 add 翻译文件 
+          git add cn/** ko/**
 
-          # 检查是否有变更（无变更则跳过提交）
-          if git diff --cached --quiet; then
-            echo "ℹ️ 无翻译文件变更，跳过提交"
-            # 删除空分支（避免垃圾分支）
-            git checkout "$SRC_BRANCH"
-            git branch -D "$TRANS_BRANCH"
-            exit 0
-          fi
+          # 没变化就不提交
+          git diff --cached --quiet || git commit -m "chore: auto translate (${TS})"
 
-          # 提交变更（带详细信息）
-          git commit -m "chore: auto translate changelog (${TS})
-          - Source branch: ${SRC_BRANCH}
-          - Translation time: $(date -u)"
-
-          # 推送新分支（强制推送仅用于同名分支，此处无需）
+          # 推送新分支
           git push origin "$TRANS_BRANCH"
-
-          # 输出分支信息，方便查看
-          echo "✅ 翻译分支已推送：$TRANS_BRANCH"
-          echo "🔗 分支地址：https://github.com/${{ github.repository }}/tree/$TRANS_BRANCH"
-
-      # 7️⃣ 失败通知（可选，方便排查问题）
-      - name: Notify on failure
-        if: failure()
-        run: |
-          echo "❌ 翻译流程失败，查看日志："
-          cat translation.log || echo "无翻译日志"
