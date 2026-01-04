@@ -21,15 +21,15 @@ const TARGET_LANGS = [
   },
 ];
 
-// 简化客户端配置（移除代理）
+// 初始化客户端
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  timeout: 120000, // 延长超时到120秒
+  timeout: 120000,
   maxRetries: 0,
 });
 
 /**
- * 强化重试策略
+ * 重试策略
  */
 async function withRetry(fn, maxRetries = 5) {
   let retries = 0;
@@ -49,7 +49,7 @@ async function withRetry(fn, maxRetries = 5) {
 }
 
 /**
- * 分块翻译（核心优化）
+ * 分块函数（仅处理待翻译部分）
  */
 function splitTextByParagraphs(text, maxChars = 8000) {
   const paragraphs = text.split("\n\n");
@@ -82,18 +82,59 @@ function splitTextByParagraphs(text, maxChars = 8000) {
   if (currentChunk.trim()) {
     chunks.push(currentChunk.trim());
   }
-  console.log(`✅ 文本已拆分为 ${chunks.length} 块，单块最大${maxChars}字符`);
+  console.log(`✅ 待翻译部分拆分为 ${chunks.length} 块，单块最大${maxChars}字符`);
   return chunks;
 }
 
 /**
- * 翻译函数
+ * 核心：截断文本，保留目标注释行之前的内容
+ */
+function truncateBeforeComment(text, commentMarker) {
+  const lines = text.split('\n');
+  let splitIndex = -1;
+
+  // 模糊匹配目标注释行（兼容缩进/空格）
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].includes(commentMarker)) {
+      splitIndex = i;
+      break;
+    }
+  }
+
+  if (splitIndex === -1) {
+    console.log("⚠️ 未找到目标注释行：'Component definitions - moved to end of file for cleaner code organization'，将翻译全部内容");
+    return { translatePart: text, keepPart: "" };
+  }
+
+  const translateLines = lines.slice(0, splitIndex);
+  const keepLines = lines.slice(splitIndex);
+
+  const translatePart = translateLines.join('\n').trim();
+  const keepPart = keepLines.join('\n');
+
+  console.log(`✅ 文本截断完成：
+  - 待翻译部分：${translatePart.length} 字符
+  - 保留部分（不翻译）：${keepPart.length} 字符`);
+  return { translatePart, keepPart };
+}
+
+/**
+ * 翻译函数（整合截断+分块+翻译+拼接）
  */
 async function translate(text, systemPrompt) {
-  console.log("API Key 配置：", process.env.OPENAI_API_KEY ? "已配置（长度：" + process.env.OPENAI_API_KEY.length + "）" : "未配置");
-  console.log("待翻译文本原始长度：", text.length, "字符");
+  console.log("\n📝 原始文本总长度：", text.length, "字符");
 
-  const chunks = splitTextByParagraphs(text);
+  // 1. 截断文本（关键：只翻译目标行之前的内容）
+  const commentMarker = "Component definitions - moved to end of file for cleaner code organization";
+  const { translatePart, keepPart } = truncateBeforeComment(text, commentMarker);
+
+  // 2. 无待翻译内容：直接返回保留部分
+  if (!translatePart) {
+    return keepPart;
+  }
+
+  // 3. 分块翻译待翻译部分
+  const chunks = splitTextByParagraphs(translatePart);
   const translatedChunks = [];
 
   for (let i = 0; i < chunks.length; i++) {
@@ -102,22 +143,26 @@ async function translate(text, systemPrompt) {
       return await client.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
-          { role: "system", content: `${systemPrompt}\n注意：这是文本的第${i+1}块，共${chunks.length}块，请保持翻译风格统一。` },
-          { role: "user", content: chunks[i] },
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `请翻译以下文本，严格遵循系统指令：\n${chunks[i]}` },
         ],
-        temperature: 0.1,
+        temperature: 0.0,
         max_tokens: 4096,
         stream: false,
       });
     });
 
     if (!res || !res.choices || res.choices.length === 0) {
-      throw new Error(`第${i+1}块API返回异常：${JSON.stringify(res)}`);
+      throw new Error(`第${i+1}块翻译失败：API返回异常`);
     }
     translatedChunks.push(res.choices[0].message.content.trim());
   }
 
-  return translatedChunks.join("\n\n");
+  // 4. 合并翻译结果 + 拼接保留部分（原样）
+  const translatedPart = translatedChunks.join("\n\n");
+  const finalResult = translatedPart + (keepPart ? "\n" + keepPart : "");
+
+  return finalResult;
 }
 
 /**
@@ -125,7 +170,7 @@ async function translate(text, systemPrompt) {
  */
 async function run() {
   if (!(await fs.pathExists(SRC_DIR))) {
-    console.log("No changelog directory found, skip translation.");
+    console.log("❌ 未找到 changelog 目录，跳过翻译");
     return;
   }
 
@@ -136,7 +181,7 @@ async function run() {
     const srcPath = path.join(SRC_DIR, file);
     const content = await fs.readFile(srcPath, "utf-8");
 
-    console.log(`\n========== 开始翻译 ${srcPath} ==========`);
+    console.log(`\n========== 开始处理 ${srcPath} ==========`);
 
     for (const lang of TARGET_LANGS) {
       const outDir = path.join(lang.code, "changelog");
@@ -146,18 +191,19 @@ async function run() {
       try {
         const translated = await translate(content, lang.systemPrompt);
         await fs.writeFile(outPath, translated, "utf-8");
-        console.log(`✓ 成功：${file} → ${lang.code}/changelog/${file}`);
+        console.log(`✅ 成功：${file} → ${lang.code}/changelog/${file}`);
       } catch (err) {
-        console.error(`✗ 失败：${file} → ${lang.code}`, err.stack);
+        console.error(`❌ 失败：${file} → ${lang.code}`, err.stack);
         continue;
       }
     }
   }
-  console.log("\nTranslation completed (部分失败请查看日志)");
+
+  console.log("\n🎉 所有文件处理完成！");
 }
 
-// 执行
+// 执行主流程
 run().catch((err) => {
-  console.error("全局执行失败：", err.stack);
+  console.error("💥 全局执行失败：", err.stack);
   process.exit(1);
 });
