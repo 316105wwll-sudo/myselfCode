@@ -87,49 +87,83 @@ function splitTextByParagraphs(text, maxChars = 8000) {
 }
 
 /**
- * 🔥 兼容跨多行标记的截断逻辑（核心修改）
+ * 🔥 双标记截断逻辑（核心修改）
+ * 规则：
+ * 1. 前标记（markerBefore）及之前 → 不翻译，保留
+ * 2. 前标记后 ~ 后标记前 → 翻译
+ * 3. 后标记（markerAfter）及之后 → 不翻译，保留
  */
-function truncateAfterComment(text, commentMarker) {
-  // 直接在原始文本中查找标记（含换行/缩进，完全匹配）
-  const markerStartIndex = text.indexOf(commentMarker);
+function truncateWithTwoMarkers(text, markerBefore, markerAfter) {
+  // 1. 定位前标记（兼容跨多行）
+  const markerBeforeIndex = text.indexOf(markerBefore);
+  // 2. 定位后标记（从前往后找，且在前标记之后）
+  const markerAfterIndex = markerBeforeIndex === -1
+    ? -1
+    : text.indexOf(markerAfter, markerBeforeIndex + markerBefore.length);
 
-  // 未找到标记的兜底逻辑
-  if (markerStartIndex === -1) {
-    console.log(`⚠️ 未找到目标标记字符，将翻译全部内容`);
-    // 若想改为「全部保留不翻译」，替换为：return { translatePart: "", keepPart: text };
-    return { translatePart: text, keepPart: "" };
+  // 边界情况1：没找到前标记 → 只处理后标记（后标记及之后不翻译）
+  if (markerBeforeIndex === -1) {
+    if (markerAfterIndex === -1) {
+      console.log("⚠️ 未找到任何标记，将翻译全部内容");
+      return { translatePart: text, keepBefore: "", keepAfter: "" };
+    }
+    console.log("⚠️ 未找到前标记，仅保留后标记及之后不翻译");
+    return {
+      translatePart: text.slice(0, markerAfterIndex).trim(),
+      keepBefore: "",
+      keepAfter: text.slice(markerAfterIndex)
+    };
   }
 
-  // 拆分：标记及之前保留，标记之后翻译
-  const keepPart = text.slice(0, markerStartIndex + commentMarker.length);
-  const translatePart = text.slice(markerStartIndex + commentMarker.length).trim();
+  // 边界情况2：找到前标记，但没找到后标记 → 仅前标记及之前不翻译，之后全翻译
+  if (markerAfterIndex === -1) {
+    console.log("⚠️ 未找到后标记，仅保留前标记及之前不翻译");
+    return {
+      translatePart: text.slice(markerBeforeIndex + markerBefore.length).trim(),
+      keepBefore: text.slice(0, markerBeforeIndex + markerBefore.length),
+      keepAfter: ""
+    };
+  }
 
-  console.log(`✅ 文本截断完成：
-  - 保留不翻译（标记及之前）：${keepPart.length} 字符
-  - 待翻译部分（标记之后）：${translatePart.length} 字符`);
-  return { translatePart, keepPart };
+  // 正常情况：前后标记都找到 → 中间部分翻译
+  console.log(`✅ 双标记定位成功：
+  - 前标记位置：${markerBeforeIndex}
+  - 后标记位置：${markerAfterIndex}`);
+
+  return {
+    // 待翻译：前标记后 ~ 后标记前
+    translatePart: text.slice(markerBeforeIndex + markerBefore.length, markerAfterIndex).trim(),
+    // 保留：前标记及之前
+    keepBefore: text.slice(0, markerBeforeIndex + markerBefore.length),
+    // 保留：后标记及之后
+    keepAfter: text.slice(markerAfterIndex)
+  };
 }
 
 /**
- * 翻译函数（整合截断+分块+翻译+拼接）
+ * 翻译函数（整合双标记+分块+翻译+拼接）
  */
 async function translate(text, systemPrompt) {
   console.log("\n📝 原始文本总长度：", text.length, "字符");
 
-  // 🔥 替换为你实际要保留的跨多行字符（原样复制，含换行/缩进）
-  const commentMarker = `};
+  // 🔥 配置两个标记（原样复制，含换行/缩进/特殊字符）
+  // 前标记：};    return <ShowResult />;  })()}</div>
+  const markerBefore = `};
     return <ShowResult />;
   })()}
-</div>`; // 示例：跨多行的标记字符，原样粘贴即可
+</div>`;
+  // 后标记：{/* Component definitions - moved to end of file for cleaner code organization */}
+  const markerAfter = `{/* Component definitions - moved to end of file for cleaner code organization */}`;
 
-  const { translatePart, keepPart } = truncateAfterComment(text, commentMarker);
+  // 执行双标记截断
+  const { translatePart, keepBefore, keepAfter } = truncateWithTwoMarkers(text, markerBefore, markerAfter);
 
-  // 无待翻译内容：直接返回保留部分
+  // 无待翻译内容 → 直接返回保留的前后部分
   if (!translatePart) {
-    return keepPart;
+    return keepBefore + keepAfter;
   }
 
-  // 分块翻译标记之后的内容
+  // 分块翻译中间内容
   const chunks = splitTextByParagraphs(translatePart);
   const translatedChunks = [];
 
@@ -154,9 +188,9 @@ async function translate(text, systemPrompt) {
     translatedChunks.push(res.choices[0].message.content.trim());
   }
 
-  // 拼接：保留部分（标记及之前） + 翻译后的部分
+  // 拼接最终结果：前保留 + 翻译后的中间内容 + 后保留
   const translatedPart = translatedChunks.join("\n\n");
-  const finalResult = keepPart + (translatedPart ? "\n" + translatedPart : "");
+  const finalResult = keepBefore + (translatedPart ? "\n" + translatedPart : "") + keepAfter;
 
   return finalResult;
 }
