@@ -17,7 +17,7 @@ const TARGET_LANGS = [
     code: "ko",
     name: "Korean",
     systemPrompt:
-      "Please translate the following English changelog into professional Korean, ensuring that: 1. The language is concise and suitable for technical documentation. 2. Only translate the text content, ignore code blocks, JavaScript code, tables, and special formatting (such as code lines, columns, components, etc.). 3. Preserve the original paragraph and heading (#) formats. 4. Do not translate or display any code or dynamic content.",
+      "다음 영어 changelog 를 전문적인 한국어로 번역해 주세요. 다음 요구사항을 엄격히 준수하세요: 1. 언어는 간결하고 전문적이며, 개발자와 기술 문서 읽는 사람에게 적합해야 합니다. 2. 텍스트 내용만 번역하고, HTML 태그, 코드 블록, 표, 특수 형식(예: 코드 행, 열 등) 등은 무시하고, 코드로 보이는 모든 내용은 그대로 유지하세요. 3. 원본 HTML 태그와 구조를 유지하고, 형식을 수정하지 마세요. 4. 번역 내용의 정확성을 보장하고, 언어는 간결하게 유지하세요. 5. 날짜, 제목 등은 원본 그대로 유지하고 번역하지 마세요.",
   },
 ];
 
