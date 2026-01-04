@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@octokit/core": "^7.0.6",
+    "@octokit/plugin-retry": "^8.0.3",
     "fs-extra": "^11.3.3",
     "openai": "^6.15.0"
   }
