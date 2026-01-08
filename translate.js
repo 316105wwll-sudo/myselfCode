@@ -11,15 +11,16 @@ const TARGET_LANGS = [
     code: "cn",
     name: "Chinese",
     systemPrompt:
-      "请将以下英文 changelog 翻译成简体中文，要求：1. 语言简洁、专业，适合开发人员和技术文档阅读。2. 只翻译纯文本部分，忽略任何 HTML 标签、代码块、表格、特殊格式（如代码行、列）等，看着像代码也保留不动。3. 保留原有 HTML 标签和结构，不要修改格式。4. 保证翻译内容准确，语言简洁。5.日期等保持原样，不要翻译。6.小标题的单词也要翻译",
+      "请将以下英文 changelog 按中文语境重写一下，要求： 2. 只翻译纯文本部分，忽略任何 HTML 标签、代码块、表格、特殊格式（如代码行、列）等，看着像代码也保留不动。3. 保留原有 HTML 标签和结构，不要修改格式。4. 保证翻译内容准确。5.小标题的单词也要翻译（标题的日期不要翻译）。6.不要直译特定名词，翻译符合中文习惯。",
   },
   {
     code: "ko",
     name: "Korean",
     systemPrompt:
-      "다음 영어 changelog 를 전문적인 한국어로 번역해 주세요. 다음 요구사항을 엄격히 준수하세요: 1. 언어는 간결하고 전문적이며, 개발자와 기술 문서 읽는 사람에게 적합해야 합니다. 2. 텍스트 내용만 번역하고, HTML 태그, 코드 블록, 표, 특수 형식(예: 코드 행, 열 등) 등은 무시하고, 코드로 보이는 모든 내용은 그대로 유지하세요. 3. 원본 HTML 태그와 구조를 유지하고, 형식을 수정하지 마세요. 4. 번역 내용의 정확성을 보장하고, 언어는 간결하게 유지하세요. 5. 날짜 등은 원본 그대로 유지하고 번역하지 마세요. 6. 소제목의 단어도 반드시 번역하세요.",
+      "다음 영어 changelog 를 한국어 문맥에 맞게 재작성해 주세요. 다음 요구사항을 엄격히 준수하세요: 1. 텍스트 내용만 번역하고, HTML 태그, 코드 블록, 표, 특수 형식(예: 코드 행, 열 등) 등은 무시하고, 코드로 보이는 모든 내용은 그대로 유지하세요. 2. 원본 HTML 태그와 구조를 유지하고, 형식을 수정하지 마세요. 3. 번역 내용의 정확성을 보장하세요. 4. 소제목의 단어도 반드시 번역하세요（소제목의 날짜는 번역하지 마세요）. 5. 특정 명사는 직역하지 않고, 한국어 사용 습관에 맞게 번역하세요.",
   },
 ];
+
 // 初始化客户端
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -86,53 +87,83 @@ function splitTextByParagraphs(text, maxChars = 8000) {
 }
 
 /**
- * 核心：截断文本，保留目标注释行之前的内容
+ * 🔥 双标记截断逻辑（核心修改）
+ * 规则：
+ * 1. 前标记（markerBefore）及之前 → 不翻译，保留
+ * 2. 前标记后 ~ 后标记前 → 翻译
+ * 3. 后标记（markerAfter）及之后 → 不翻译，保留
  */
-function truncateBeforeComment(text, commentMarker) {
-  const lines = text.split('\n');
-  let splitIndex = -1;
+function truncateWithTwoMarkers(text, markerBefore, markerAfter) {
+  // 1. 定位前标记（兼容跨多行）
+  const markerBeforeIndex = text.indexOf(markerBefore);
+  // 2. 定位后标记（从前往后找，且在前标记之后）
+  const markerAfterIndex = markerBeforeIndex === -1
+    ? -1
+    : text.indexOf(markerAfter, markerBeforeIndex + markerBefore.length);
 
-  // 模糊匹配目标注释行（兼容缩进/空格）
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i].includes(commentMarker)) {
-      splitIndex = i;
-      break;
+  // 边界情况1：没找到前标记 → 只处理后标记（后标记及之后不翻译）
+  if (markerBeforeIndex === -1) {
+    if (markerAfterIndex === -1) {
+      console.log("⚠️ 未找到任何标记，将翻译全部内容");
+      return { translatePart: text, keepBefore: "", keepAfter: "" };
     }
+    console.log("⚠️ 未找到前标记，仅保留后标记及之后不翻译");
+    return {
+      translatePart: text.slice(0, markerAfterIndex).trim(),
+      keepBefore: "",
+      keepAfter: text.slice(markerAfterIndex)
+    };
   }
 
-  if (splitIndex === -1) {
-    console.log("⚠️ 未找到目标注释行：'Component definitions - moved to end of file for cleaner code organization'，将翻译全部内容");
-    return { translatePart: text, keepPart: "" };
+  // 边界情况2：找到前标记，但没找到后标记 → 仅前标记及之前不翻译，之后全翻译
+  if (markerAfterIndex === -1) {
+    console.log("⚠️ 未找到后标记，仅保留前标记及之前不翻译");
+    return {
+      translatePart: text.slice(markerBeforeIndex + markerBefore.length).trim(),
+      keepBefore: text.slice(0, markerBeforeIndex + markerBefore.length),
+      keepAfter: ""
+    };
   }
 
-  const translateLines = lines.slice(0, splitIndex);
-  const keepLines = lines.slice(splitIndex);
+  // 正常情况：前后标记都找到 → 中间部分翻译
+  console.log(`✅ 双标记定位成功：
+  - 前标记位置：${markerBeforeIndex}
+  - 后标记位置：${markerAfterIndex}`);
 
-  const translatePart = translateLines.join('\n').trim();
-  const keepPart = keepLines.join('\n');
-
-  console.log(`✅ 文本截断完成：
-  - 待翻译部分：${translatePart.length} 字符
-  - 保留部分（不翻译）：${keepPart.length} 字符`);
-  return { translatePart, keepPart };
+  return {
+    // 待翻译：前标记后 ~ 后标记前
+    translatePart: text.slice(markerBeforeIndex + markerBefore.length, markerAfterIndex).trim(),
+    // 保留：前标记及之前
+    keepBefore: text.slice(0, markerBeforeIndex + markerBefore.length),
+    // 保留：后标记及之后
+    keepAfter: text.slice(markerAfterIndex)
+  };
 }
 
 /**
- * 翻译函数（整合截断+分块+翻译+拼接）
+ * 翻译函数（整合双标记+分块+翻译+拼接）
  */
 async function translate(text, systemPrompt) {
   console.log("\n📝 原始文本总长度：", text.length, "字符");
 
-  // 1. 截断文本（关键：只翻译目标行之前的内容）
-  const commentMarker = "Component definitions - moved to end of file for cleaner code organization";
-  const { translatePart, keepPart } = truncateBeforeComment(text, commentMarker);
+  // 🔥 配置两个标记（原样复制，含换行/缩进/特殊字符）
+  // 前标记：};    return <ShowResult />;  })()}</div>
+  const markerBefore = `};
+    return <ShowResult />;
+  })()}
+</div>`;
+  // 后标记：{/* Component definitions - moved to end of file for cleaner code organization */}
+  const markerAfter = `{/* Component definitions - moved to end of file for cleaner code organization */}`;
 
-  // 2. 无待翻译内容：直接返回保留部分
+  // 执行双标记截断
+  const { translatePart, keepBefore, keepAfter } = truncateWithTwoMarkers(text, markerBefore, markerAfter);
+
+  // 无待翻译内容 → 直接返回保留的前后部分
   if (!translatePart) {
-    return keepPart;
+    return keepBefore + keepAfter;
   }
 
-  // 3. 分块翻译待翻译部分
+  // 分块翻译中间内容
   const chunks = splitTextByParagraphs(translatePart);
   const translatedChunks = [];
 
@@ -157,9 +188,9 @@ async function translate(text, systemPrompt) {
     translatedChunks.push(res.choices[0].message.content.trim());
   }
 
-  // 4. 合并翻译结果 + 拼接保留部分（原样）
+  // 拼接最终结果：前保留 + 翻译后的中间内容 + 后保留
   const translatedPart = translatedChunks.join("\n\n");
-  const finalResult = translatedPart + (keepPart ? "\n" + keepPart : "");
+  const finalResult = keepBefore + (translatedPart ? "\n" + translatedPart : "") + keepAfter;
 
   return finalResult;
 }
