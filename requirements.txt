@@ -3,3 +3,7 @@ flask-sqlalchemy==3.1.1
 flask-cors==4.0.0  # 解决跨域问题
 pyjwt==2.8.0       # 生成登录令牌
 passlib==1.7.4     # 密码加密
+python-telegram-bot==20.7
+openai
+python-dotenv
+numpy
